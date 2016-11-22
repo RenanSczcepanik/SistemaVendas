@@ -35,6 +35,11 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Produtos.findByValor", query = "SELECT p FROM Produtos p WHERE p.valor = :valor")})
 public class Produto implements Serializable {
 
+    @Column(name = "PRECO_VENDA")
+    private BigDecimal precoVenda;
+    @Column(name = "PRECO_CUSTO")
+    private BigDecimal precoCusto;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -112,6 +117,22 @@ public class Produto implements Serializable {
     @Override
     public String toString() {
         return "br.edu.uricer.model.Produtos[ id=" + id + " ]";
+    }
+
+    public BigDecimal getPrecoVenda() {
+        return precoVenda;
+    }
+
+    public void setPrecoVenda(BigDecimal precoVenda) {
+        this.precoVenda = precoVenda;
+    }
+
+    public BigDecimal getPrecoCusto() {
+        return precoCusto;
+    }
+
+    public void setPrecoCusto(BigDecimal precoCusto) {
+        this.precoCusto = precoCusto;
     }
     
 }
