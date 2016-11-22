@@ -6,30 +6,33 @@
 package br.edu.uricer.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author renan
  */
 @Entity
-@Table(name = "VENDAS")
+@Table(name = "FORNECEDORES")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Vendas.findAll", query = "SELECT v FROM Vendas v"),
-    @NamedQuery(name = "Vendas.findById", query = "SELECT v FROM Vendas v WHERE v.id = :id")})
-public class Vendas implements Serializable {
+    @NamedQuery(name = "Fornecedores.findAll", query = "SELECT f FROM Fornecedores f"),
+    @NamedQuery(name = "Fornecedores.findById", query = "SELECT f FROM Fornecedores f WHERE f.id = :id"),
+    @NamedQuery(name = "Fornecedores.findByNome", query = "SELECT f FROM Fornecedores f WHERE f.nome = :nome"),
+    @NamedQuery(name = "Fornecedores.findByCidade", query = "SELECT f FROM Fornecedores f WHERE f.cidade = :cidade")})
+public class Fornecedor implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -37,20 +40,17 @@ public class Vendas implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
-    @JoinColumn(name = "ID_CLI", referencedColumnName = "ID")
-    @ManyToOne
-    private Clientes idCli;
-    @JoinColumn(name = "ID_FORNEC", referencedColumnName = "ID")
-    @ManyToOne
-    private Fornecedores idFornec;
-    @JoinColumn(name = "ID_PROD", referencedColumnName = "ID")
-    @ManyToOne
-    private Produtos idProd;
+    @Column(name = "NOME")
+    private String nome;
+    @Column(name = "CIDADE")
+    private String cidade;
+    @OneToMany(mappedBy = "idFornec")
+    private Collection<Venda> vendasCollection;
 
-    public Vendas() {
+    public Fornecedor() {
     }
 
-    public Vendas(Integer id) {
+    public Fornecedor(Integer id) {
         this.id = id;
     }
 
@@ -62,28 +62,29 @@ public class Vendas implements Serializable {
         this.id = id;
     }
 
-    public Clientes getIdCli() {
-        return idCli;
+    public String getNome() {
+        return nome;
     }
 
-    public void setIdCli(Clientes idCli) {
-        this.idCli = idCli;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
-    public Fornecedores getIdFornec() {
-        return idFornec;
+    public String getCidade() {
+        return cidade;
     }
 
-    public void setIdFornec(Fornecedores idFornec) {
-        this.idFornec = idFornec;
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
     }
 
-    public Produtos getIdProd() {
-        return idProd;
+    @XmlTransient
+    public Collection<Venda> getVendasCollection() {
+        return vendasCollection;
     }
 
-    public void setIdProd(Produtos idProd) {
-        this.idProd = idProd;
+    public void setVendasCollection(Collection<Venda> vendasCollection) {
+        this.vendasCollection = vendasCollection;
     }
 
     @Override
@@ -96,10 +97,10 @@ public class Vendas implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Vendas)) {
+        if (!(object instanceof Fornecedor)) {
             return false;
         }
-        Vendas other = (Vendas) object;
+        Fornecedor other = (Fornecedor) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -108,7 +109,7 @@ public class Vendas implements Serializable {
 
     @Override
     public String toString() {
-        return "br.edu.uricer.model.Vendas[ id=" + id + " ]";
+        return "br.edu.uricer.model.Fornecedores[ id=" + id + " ]";
     }
     
 }

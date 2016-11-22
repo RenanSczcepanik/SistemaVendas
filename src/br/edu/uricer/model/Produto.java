@@ -6,6 +6,7 @@
 package br.edu.uricer.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -25,14 +26,14 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author renan
  */
 @Entity
-@Table(name = "FORNECEDORES")
+@Table(name = "PRODUTOS")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Fornecedores.findAll", query = "SELECT f FROM Fornecedores f"),
-    @NamedQuery(name = "Fornecedores.findById", query = "SELECT f FROM Fornecedores f WHERE f.id = :id"),
-    @NamedQuery(name = "Fornecedores.findByNome", query = "SELECT f FROM Fornecedores f WHERE f.nome = :nome"),
-    @NamedQuery(name = "Fornecedores.findByCidade", query = "SELECT f FROM Fornecedores f WHERE f.cidade = :cidade")})
-public class Fornecedores implements Serializable {
+    @NamedQuery(name = "Produtos.findAll", query = "SELECT p FROM Produtos p"),
+    @NamedQuery(name = "Produtos.findById", query = "SELECT p FROM Produtos p WHERE p.id = :id"),
+    @NamedQuery(name = "Produtos.findByNome", query = "SELECT p FROM Produtos p WHERE p.nome = :nome"),
+    @NamedQuery(name = "Produtos.findByValor", query = "SELECT p FROM Produtos p WHERE p.valor = :valor")})
+public class Produto implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -42,15 +43,16 @@ public class Fornecedores implements Serializable {
     private Integer id;
     @Column(name = "NOME")
     private String nome;
-    @Column(name = "CIDADE")
-    private String cidade;
-    @OneToMany(mappedBy = "idFornec")
-    private Collection<Vendas> vendasCollection;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "VALOR")
+    private BigDecimal valor;
+    @OneToMany(mappedBy = "idProd")
+    private Collection<Venda> vendasCollection;
 
-    public Fornecedores() {
+    public Produto() {
     }
 
-    public Fornecedores(Integer id) {
+    public Produto(Integer id) {
         this.id = id;
     }
 
@@ -70,20 +72,20 @@ public class Fornecedores implements Serializable {
         this.nome = nome;
     }
 
-    public String getCidade() {
-        return cidade;
+    public BigDecimal getValor() {
+        return valor;
     }
 
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
+    public void setValor(BigDecimal valor) {
+        this.valor = valor;
     }
 
     @XmlTransient
-    public Collection<Vendas> getVendasCollection() {
+    public Collection<Venda> getVendasCollection() {
         return vendasCollection;
     }
 
-    public void setVendasCollection(Collection<Vendas> vendasCollection) {
+    public void setVendasCollection(Collection<Venda> vendasCollection) {
         this.vendasCollection = vendasCollection;
     }
 
@@ -97,10 +99,10 @@ public class Fornecedores implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Fornecedores)) {
+        if (!(object instanceof Produto)) {
             return false;
         }
-        Fornecedores other = (Fornecedores) object;
+        Produto other = (Produto) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -109,7 +111,7 @@ public class Fornecedores implements Serializable {
 
     @Override
     public String toString() {
-        return "br.edu.uricer.model.Fornecedores[ id=" + id + " ]";
+        return "br.edu.uricer.model.Produtos[ id=" + id + " ]";
     }
     
 }

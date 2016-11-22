@@ -6,33 +6,30 @@
 package br.edu.uricer.model;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author renan
  */
 @Entity
-@Table(name = "CLIENTES")
+@Table(name = "VENDAS")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Clientes.findAll", query = "SELECT c FROM Clientes c"),
-    @NamedQuery(name = "Clientes.findById", query = "SELECT c FROM Clientes c WHERE c.id = :id"),
-    @NamedQuery(name = "Clientes.findByNome", query = "SELECT c FROM Clientes c WHERE c.nome = :nome"),
-    @NamedQuery(name = "Clientes.findByCidade", query = "SELECT c FROM Clientes c WHERE c.cidade = :cidade")})
-public class Clientes implements Serializable {
+    @NamedQuery(name = "Vendas.findAll", query = "SELECT v FROM Vendas v"),
+    @NamedQuery(name = "Vendas.findById", query = "SELECT v FROM Vendas v WHERE v.id = :id")})
+public class Venda implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -40,17 +37,20 @@ public class Clientes implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
-    @Column(name = "NOME")
-    private String nome;
-    @Column(name = "CIDADE")
-    private String cidade;
-    @OneToMany(mappedBy = "idCli")
-    private Collection<Vendas> vendasCollection;
+    @JoinColumn(name = "ID_CLI", referencedColumnName = "ID")
+    @ManyToOne
+    private Cliente idCli;
+    @JoinColumn(name = "ID_FORNEC", referencedColumnName = "ID")
+    @ManyToOne
+    private Fornecedor idFornec;
+    @JoinColumn(name = "ID_PROD", referencedColumnName = "ID")
+    @ManyToOne
+    private Produto idProd;
 
-    public Clientes() {
+    public Venda() {
     }
 
-    public Clientes(Integer id) {
+    public Venda(Integer id) {
         this.id = id;
     }
 
@@ -62,29 +62,28 @@ public class Clientes implements Serializable {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public Cliente getIdCli() {
+        return idCli;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setIdCli(Cliente idCli) {
+        this.idCli = idCli;
     }
 
-    public String getCidade() {
-        return cidade;
+    public Fornecedor getIdFornec() {
+        return idFornec;
     }
 
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
+    public void setIdFornec(Fornecedor idFornec) {
+        this.idFornec = idFornec;
     }
 
-    @XmlTransient
-    public Collection<Vendas> getVendasCollection() {
-        return vendasCollection;
+    public Produto getIdProd() {
+        return idProd;
     }
 
-    public void setVendasCollection(Collection<Vendas> vendasCollection) {
-        this.vendasCollection = vendasCollection;
+    public void setIdProd(Produto idProd) {
+        this.idProd = idProd;
     }
 
     @Override
@@ -97,10 +96,10 @@ public class Clientes implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Clientes)) {
+        if (!(object instanceof Venda)) {
             return false;
         }
-        Clientes other = (Clientes) object;
+        Venda other = (Venda) object;
         if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
             return false;
         }
@@ -109,7 +108,7 @@ public class Clientes implements Serializable {
 
     @Override
     public String toString() {
-        return "br.edu.uricer.model.Clientes[ id=" + id + " ]";
+        return "br.edu.uricer.model.Vendas[ id=" + id + " ]";
     }
     
 }

@@ -6,13 +6,13 @@
 package br.edu.uricer.dao;
 
 import br.edu.uricer.dao.exceptions.NonexistentEntityException;
-import br.edu.uricer.model.Clientes;
+import br.edu.uricer.model.Produto;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import br.edu.uricer.model.Vendas;
+import br.edu.uricer.model.Venda;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,9 +23,9 @@ import javax.persistence.EntityManagerFactory;
  *
  * @author renan
  */
-public class ClientesJpaController implements Serializable {
+public class ProdutoDAO implements Serializable {
 
-    public ClientesJpaController(EntityManagerFactory emf) {
+    public ProdutoDAO(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -34,28 +34,28 @@ public class ClientesJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Clientes clientes) {
-        if (clientes.getVendasCollection() == null) {
-            clientes.setVendasCollection(new ArrayList<Vendas>());
+    public void create(Produto produtos) {
+        if (produtos.getVendasCollection() == null) {
+            produtos.setVendasCollection(new ArrayList<Venda>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Collection<Vendas> attachedVendasCollection = new ArrayList<Vendas>();
-            for (Vendas vendasCollectionVendasToAttach : clientes.getVendasCollection()) {
+            Collection<Venda> attachedVendasCollection = new ArrayList<Venda>();
+            for (Venda vendasCollectionVendasToAttach : produtos.getVendasCollection()) {
                 vendasCollectionVendasToAttach = em.getReference(vendasCollectionVendasToAttach.getClass(), vendasCollectionVendasToAttach.getId());
                 attachedVendasCollection.add(vendasCollectionVendasToAttach);
             }
-            clientes.setVendasCollection(attachedVendasCollection);
-            em.persist(clientes);
-            for (Vendas vendasCollectionVendas : clientes.getVendasCollection()) {
-                Clientes oldIdCliOfVendasCollectionVendas = vendasCollectionVendas.getIdCli();
-                vendasCollectionVendas.setIdCli(clientes);
+            produtos.setVendasCollection(attachedVendasCollection);
+            em.persist(produtos);
+            for (Venda vendasCollectionVendas : produtos.getVendasCollection()) {
+                Produto oldIdProdOfVendasCollectionVendas = vendasCollectionVendas.getIdProd();
+                vendasCollectionVendas.setIdProd(produtos);
                 vendasCollectionVendas = em.merge(vendasCollectionVendas);
-                if (oldIdCliOfVendasCollectionVendas != null) {
-                    oldIdCliOfVendasCollectionVendas.getVendasCollection().remove(vendasCollectionVendas);
-                    oldIdCliOfVendasCollectionVendas = em.merge(oldIdCliOfVendasCollectionVendas);
+                if (oldIdProdOfVendasCollectionVendas != null) {
+                    oldIdProdOfVendasCollectionVendas.getVendasCollection().remove(vendasCollectionVendas);
+                    oldIdProdOfVendasCollectionVendas = em.merge(oldIdProdOfVendasCollectionVendas);
                 }
             }
             em.getTransaction().commit();
@@ -66,36 +66,36 @@ public class ClientesJpaController implements Serializable {
         }
     }
 
-    public void edit(Clientes clientes) throws NonexistentEntityException, Exception {
+    public void edit(Produto produtos) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Clientes persistentClientes = em.find(Clientes.class, clientes.getId());
-            Collection<Vendas> vendasCollectionOld = persistentClientes.getVendasCollection();
-            Collection<Vendas> vendasCollectionNew = clientes.getVendasCollection();
-            Collection<Vendas> attachedVendasCollectionNew = new ArrayList<Vendas>();
-            for (Vendas vendasCollectionNewVendasToAttach : vendasCollectionNew) {
+            Produto persistentProdutos = em.find(Produto.class, produtos.getId());
+            Collection<Venda> vendasCollectionOld = persistentProdutos.getVendasCollection();
+            Collection<Venda> vendasCollectionNew = produtos.getVendasCollection();
+            Collection<Venda> attachedVendasCollectionNew = new ArrayList<Venda>();
+            for (Venda vendasCollectionNewVendasToAttach : vendasCollectionNew) {
                 vendasCollectionNewVendasToAttach = em.getReference(vendasCollectionNewVendasToAttach.getClass(), vendasCollectionNewVendasToAttach.getId());
                 attachedVendasCollectionNew.add(vendasCollectionNewVendasToAttach);
             }
             vendasCollectionNew = attachedVendasCollectionNew;
-            clientes.setVendasCollection(vendasCollectionNew);
-            clientes = em.merge(clientes);
-            for (Vendas vendasCollectionOldVendas : vendasCollectionOld) {
+            produtos.setVendasCollection(vendasCollectionNew);
+            produtos = em.merge(produtos);
+            for (Venda vendasCollectionOldVendas : vendasCollectionOld) {
                 if (!vendasCollectionNew.contains(vendasCollectionOldVendas)) {
-                    vendasCollectionOldVendas.setIdCli(null);
+                    vendasCollectionOldVendas.setIdProd(null);
                     vendasCollectionOldVendas = em.merge(vendasCollectionOldVendas);
                 }
             }
-            for (Vendas vendasCollectionNewVendas : vendasCollectionNew) {
+            for (Venda vendasCollectionNewVendas : vendasCollectionNew) {
                 if (!vendasCollectionOld.contains(vendasCollectionNewVendas)) {
-                    Clientes oldIdCliOfVendasCollectionNewVendas = vendasCollectionNewVendas.getIdCli();
-                    vendasCollectionNewVendas.setIdCli(clientes);
+                    Produto oldIdProdOfVendasCollectionNewVendas = vendasCollectionNewVendas.getIdProd();
+                    vendasCollectionNewVendas.setIdProd(produtos);
                     vendasCollectionNewVendas = em.merge(vendasCollectionNewVendas);
-                    if (oldIdCliOfVendasCollectionNewVendas != null && !oldIdCliOfVendasCollectionNewVendas.equals(clientes)) {
-                        oldIdCliOfVendasCollectionNewVendas.getVendasCollection().remove(vendasCollectionNewVendas);
-                        oldIdCliOfVendasCollectionNewVendas = em.merge(oldIdCliOfVendasCollectionNewVendas);
+                    if (oldIdProdOfVendasCollectionNewVendas != null && !oldIdProdOfVendasCollectionNewVendas.equals(produtos)) {
+                        oldIdProdOfVendasCollectionNewVendas.getVendasCollection().remove(vendasCollectionNewVendas);
+                        oldIdProdOfVendasCollectionNewVendas = em.merge(oldIdProdOfVendasCollectionNewVendas);
                     }
                 }
             }
@@ -103,9 +103,9 @@ public class ClientesJpaController implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = clientes.getId();
-                if (findClientes(id) == null) {
-                    throw new NonexistentEntityException("The clientes with id " + id + " no longer exists.");
+                Integer id = produtos.getId();
+                if (findProdutos(id) == null) {
+                    throw new NonexistentEntityException("The produtos with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -121,19 +121,19 @@ public class ClientesJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Clientes clientes;
+            Produto produtos;
             try {
-                clientes = em.getReference(Clientes.class, id);
-                clientes.getId();
+                produtos = em.getReference(Produto.class, id);
+                produtos.getId();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The clientes with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The produtos with id " + id + " no longer exists.", enfe);
             }
-            Collection<Vendas> vendasCollection = clientes.getVendasCollection();
-            for (Vendas vendasCollectionVendas : vendasCollection) {
-                vendasCollectionVendas.setIdCli(null);
+            Collection<Venda> vendasCollection = produtos.getVendasCollection();
+            for (Venda vendasCollectionVendas : vendasCollection) {
+                vendasCollectionVendas.setIdProd(null);
                 vendasCollectionVendas = em.merge(vendasCollectionVendas);
             }
-            em.remove(clientes);
+            em.remove(produtos);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -142,19 +142,19 @@ public class ClientesJpaController implements Serializable {
         }
     }
 
-    public List<Clientes> findClientesEntities() {
-        return findClientesEntities(true, -1, -1);
+    public List<Produto> findProdutosEntities() {
+        return findProdutosEntities(true, -1, -1);
     }
 
-    public List<Clientes> findClientesEntities(int maxResults, int firstResult) {
-        return findClientesEntities(false, maxResults, firstResult);
+    public List<Produto> findProdutosEntities(int maxResults, int firstResult) {
+        return findProdutosEntities(false, maxResults, firstResult);
     }
 
-    private List<Clientes> findClientesEntities(boolean all, int maxResults, int firstResult) {
+    private List<Produto> findProdutosEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Clientes.class));
+            cq.select(cq.from(Produto.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -166,20 +166,20 @@ public class ClientesJpaController implements Serializable {
         }
     }
 
-    public Clientes findClientes(Integer id) {
+    public Produto findProdutos(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Clientes.class, id);
+            return em.find(Produto.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getClientesCount() {
+    public int getProdutosCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Clientes> rt = cq.from(Clientes.class);
+            Root<Produto> rt = cq.from(Produto.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

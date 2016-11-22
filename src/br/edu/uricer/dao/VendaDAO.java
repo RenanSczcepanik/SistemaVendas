@@ -11,10 +11,10 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import br.edu.uricer.model.Clientes;
-import br.edu.uricer.model.Fornecedores;
-import br.edu.uricer.model.Produtos;
-import br.edu.uricer.model.Vendas;
+import br.edu.uricer.model.Cliente;
+import br.edu.uricer.model.Fornecedor;
+import br.edu.uricer.model.Produto;
+import br.edu.uricer.model.Venda;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -23,9 +23,9 @@ import javax.persistence.EntityManagerFactory;
  *
  * @author renan
  */
-public class VendasJpaController implements Serializable {
+public class VendaDAO implements Serializable {
 
-    public VendasJpaController(EntityManagerFactory emf) {
+    public VendaDAO(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -34,22 +34,22 @@ public class VendasJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Vendas vendas) {
+    public void create(Venda vendas) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Clientes idCli = vendas.getIdCli();
+            Cliente idCli = vendas.getIdCli();
             if (idCli != null) {
                 idCli = em.getReference(idCli.getClass(), idCli.getId());
                 vendas.setIdCli(idCli);
             }
-            Fornecedores idFornec = vendas.getIdFornec();
+            Fornecedor idFornec = vendas.getIdFornec();
             if (idFornec != null) {
                 idFornec = em.getReference(idFornec.getClass(), idFornec.getId());
                 vendas.setIdFornec(idFornec);
             }
-            Produtos idProd = vendas.getIdProd();
+            Produto idProd = vendas.getIdProd();
             if (idProd != null) {
                 idProd = em.getReference(idProd.getClass(), idProd.getId());
                 vendas.setIdProd(idProd);
@@ -75,18 +75,18 @@ public class VendasJpaController implements Serializable {
         }
     }
 
-    public void edit(Vendas vendas) throws NonexistentEntityException, Exception {
+    public void edit(Venda vendas) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Vendas persistentVendas = em.find(Vendas.class, vendas.getId());
-            Clientes idCliOld = persistentVendas.getIdCli();
-            Clientes idCliNew = vendas.getIdCli();
-            Fornecedores idFornecOld = persistentVendas.getIdFornec();
-            Fornecedores idFornecNew = vendas.getIdFornec();
-            Produtos idProdOld = persistentVendas.getIdProd();
-            Produtos idProdNew = vendas.getIdProd();
+            Venda persistentVendas = em.find(Venda.class, vendas.getId());
+            Cliente idCliOld = persistentVendas.getIdCli();
+            Cliente idCliNew = vendas.getIdCli();
+            Fornecedor idFornecOld = persistentVendas.getIdFornec();
+            Fornecedor idFornecNew = vendas.getIdFornec();
+            Produto idProdOld = persistentVendas.getIdProd();
+            Produto idProdNew = vendas.getIdProd();
             if (idCliNew != null) {
                 idCliNew = em.getReference(idCliNew.getClass(), idCliNew.getId());
                 vendas.setIdCli(idCliNew);
@@ -146,24 +146,24 @@ public class VendasJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Vendas vendas;
+            Venda vendas;
             try {
-                vendas = em.getReference(Vendas.class, id);
+                vendas = em.getReference(Venda.class, id);
                 vendas.getId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The vendas with id " + id + " no longer exists.", enfe);
             }
-            Clientes idCli = vendas.getIdCli();
+            Cliente idCli = vendas.getIdCli();
             if (idCli != null) {
                 idCli.getVendasCollection().remove(vendas);
                 idCli = em.merge(idCli);
             }
-            Fornecedores idFornec = vendas.getIdFornec();
+            Fornecedor idFornec = vendas.getIdFornec();
             if (idFornec != null) {
                 idFornec.getVendasCollection().remove(vendas);
                 idFornec = em.merge(idFornec);
             }
-            Produtos idProd = vendas.getIdProd();
+            Produto idProd = vendas.getIdProd();
             if (idProd != null) {
                 idProd.getVendasCollection().remove(vendas);
                 idProd = em.merge(idProd);
@@ -177,19 +177,19 @@ public class VendasJpaController implements Serializable {
         }
     }
 
-    public List<Vendas> findVendasEntities() {
+    public List<Venda> findVendasEntities() {
         return findVendasEntities(true, -1, -1);
     }
 
-    public List<Vendas> findVendasEntities(int maxResults, int firstResult) {
+    public List<Venda> findVendasEntities(int maxResults, int firstResult) {
         return findVendasEntities(false, maxResults, firstResult);
     }
 
-    private List<Vendas> findVendasEntities(boolean all, int maxResults, int firstResult) {
+    private List<Venda> findVendasEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Vendas.class));
+            cq.select(cq.from(Venda.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -201,10 +201,10 @@ public class VendasJpaController implements Serializable {
         }
     }
 
-    public Vendas findVendas(Integer id) {
+    public Venda findVendas(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Vendas.class, id);
+            return em.find(Venda.class, id);
         } finally {
             em.close();
         }
@@ -214,7 +214,7 @@ public class VendasJpaController implements Serializable {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Vendas> rt = cq.from(Vendas.class);
+            Root<Venda> rt = cq.from(Venda.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();
