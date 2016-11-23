@@ -28,10 +28,10 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "CLIENTES")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Clientes.findAll", query = "SELECT c FROM Clientes c"),
-    @NamedQuery(name = "Clientes.findById", query = "SELECT c FROM Clientes c WHERE c.id = :id"),
-    @NamedQuery(name = "Clientes.findByNome", query = "SELECT c FROM Clientes c WHERE c.nome = :nome"),
-    @NamedQuery(name = "Clientes.findByCidade", query = "SELECT c FROM Clientes c WHERE c.cidade = :cidade")})
+    @NamedQuery(name = "Cliente.findAll", query = "SELECT c FROM Cliente c"),
+    @NamedQuery(name = "Cliente.findById", query = "SELECT c FROM Cliente c WHERE c.id = :id"),
+    @NamedQuery(name = "Cliente.findByNome", query = "SELECT c FROM Cliente c WHERE c.nome = :nome"),
+    @NamedQuery(name = "Cliente.findByCidade", query = "SELECT c FROM Cliente c WHERE c.cidade = :cidade")})
 public class Cliente implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -45,7 +45,7 @@ public class Cliente implements Serializable {
     @Column(name = "CIDADE")
     private String cidade;
     @OneToMany(mappedBy = "idCli")
-    private Collection<Venda> vendasCollection;
+    private Collection<Venda> vendaCollection;
 
     public Cliente() {
     }
@@ -79,12 +79,12 @@ public class Cliente implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Venda> getVendasCollection() {
-        return vendasCollection;
+    public Collection<Venda> getVendaCollection() {
+        return vendaCollection;
     }
 
-    public void setVendasCollection(Collection<Venda> vendasCollection) {
-        this.vendasCollection = vendasCollection;
+    public void setVendaCollection(Collection<Venda> vendaCollection) {
+        this.vendaCollection = vendaCollection;
     }
 
     @Override
@@ -109,7 +109,7 @@ public class Cliente implements Serializable {
 
     @Override
     public String toString() {
-        return "br.edu.uricer.model.Clientes[ id=" + id + " ]";
+        return "br.edu.uricer.model.Cliente[ id=" + id + " ]";
     }
     
 }

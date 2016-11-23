@@ -5,6 +5,10 @@
  */
 package br.edu.uricer.view;
 
+import br.edu.uricer.dao.ProdutoDAO;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 /**
  *
  * @author renan
@@ -17,7 +21,11 @@ public class PrincipalForm extends javax.swing.JFrame {
     public PrincipalForm() {
         initComponents();
     }
+    private void inicializar(){
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("SistemaVendasPU");        
 
+        ProdutoDAO produtoDAO = new ProdutoDAO(emf);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -28,97 +36,45 @@ public class PrincipalForm extends javax.swing.JFrame {
     private void initComponents() {
 
         jMenuBar1 = new javax.swing.JMenuBar();
-        Cadastro = new javax.swing.JMenu();
+        Opcoes = new javax.swing.JMenu();
         mnCadastroProduto = new javax.swing.JMenuItem();
         mnCadastroFornecedor = new javax.swing.JMenuItem();
         mnCadastroCliente = new javax.swing.JMenuItem();
-        Editar = new javax.swing.JMenu();
-        mnEditarProduto = new javax.swing.JMenuItem();
-        mnEditarFornecedor = new javax.swing.JMenuItem();
-        mnEditarCliente = new javax.swing.JMenuItem();
-        Pesquisar = new javax.swing.JMenu();
-        mnPesquisarProduto = new javax.swing.JMenuItem();
-        mnPesquisarFornecedor = new javax.swing.JMenuItem();
-        mnPesquisarCliente = new javax.swing.JMenuItem();
-        Excluir = new javax.swing.JMenu();
-        mnExcluirProduto = new javax.swing.JMenuItem();
-        mnExcluirFornecedor = new javax.swing.JMenuItem();
-        mnExcluirCliente = new javax.swing.JMenuItem();
+        Venda = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sistema Vendas");
 
-        Cadastro.setText("Cadastro");
+        Opcoes.setText("Opções");
 
-        mnCadastroProduto.setText("Produto");
+        mnCadastroProduto.setText("Produtos");
         mnCadastroProduto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnCadastroProdutoActionPerformed(evt);
             }
         });
-        Cadastro.add(mnCadastroProduto);
+        Opcoes.add(mnCadastroProduto);
 
-        mnCadastroFornecedor.setText("Fornecedor");
+        mnCadastroFornecedor.setText("Fornecedores");
         mnCadastroFornecedor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnCadastroFornecedorActionPerformed(evt);
             }
         });
-        Cadastro.add(mnCadastroFornecedor);
+        Opcoes.add(mnCadastroFornecedor);
 
-        mnCadastroCliente.setText("Cliente");
+        mnCadastroCliente.setText("Clientes");
         mnCadastroCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mnCadastroClienteActionPerformed(evt);
             }
         });
-        Cadastro.add(mnCadastroCliente);
+        Opcoes.add(mnCadastroCliente);
 
-        jMenuBar1.add(Cadastro);
+        jMenuBar1.add(Opcoes);
 
-        Editar.setText("Editar");
-
-        mnEditarProduto.setText("Produto");
-        Editar.add(mnEditarProduto);
-
-        mnEditarFornecedor.setText("Fornecedor");
-        Editar.add(mnEditarFornecedor);
-
-        mnEditarCliente.setText("Cliente");
-        Editar.add(mnEditarCliente);
-
-        jMenuBar1.add(Editar);
-
-        Pesquisar.setText("Pesquisar");
-
-        mnPesquisarProduto.setText("Produto");
-        Pesquisar.add(mnPesquisarProduto);
-
-        mnPesquisarFornecedor.setText("Fornecedor");
-        mnPesquisarFornecedor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mnPesquisarFornecedorActionPerformed(evt);
-            }
-        });
-        Pesquisar.add(mnPesquisarFornecedor);
-
-        mnPesquisarCliente.setText("Cliente");
-        Pesquisar.add(mnPesquisarCliente);
-
-        jMenuBar1.add(Pesquisar);
-
-        Excluir.setText("Excluir");
-
-        mnExcluirProduto.setText("Produto");
-        Excluir.add(mnExcluirProduto);
-
-        mnExcluirFornecedor.setText("Fornecedor");
-        Excluir.add(mnExcluirFornecedor);
-
-        mnExcluirCliente.setText("Cliente");
-        Excluir.add(mnExcluirCliente);
-
-        jMenuBar1.add(Excluir);
+        Venda.setText("Vendas");
+        jMenuBar1.add(Venda);
 
         setJMenuBar(jMenuBar1);
 
@@ -138,21 +94,17 @@ public class PrincipalForm extends javax.swing.JFrame {
 
     private void mnCadastroClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnCadastroClienteActionPerformed
         // TODO add your handling code here:
-        new CadastroClienteForm().setVisible(true);
+        new OpcoesClienteForm().setVisible(true);
     }//GEN-LAST:event_mnCadastroClienteActionPerformed
-
-    private void mnPesquisarFornecedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnPesquisarFornecedorActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_mnPesquisarFornecedorActionPerformed
 
     private void mnCadastroProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnCadastroProdutoActionPerformed
         // TODO add your handling code here:
-        new CadastroProdutoForm().setVisible(true);
+        new OpcoesProdutoForm().setVisible(true);
     }//GEN-LAST:event_mnCadastroProdutoActionPerformed
 
     private void mnCadastroFornecedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnCadastroFornecedorActionPerformed
         // TODO add your handling code here:
-        new CadastroFornecedorForm().setVisible(true);
+        new OpcoesFornecedorForm().setVisible(true);
     }//GEN-LAST:event_mnCadastroFornecedorActionPerformed
 
     /**
@@ -191,22 +143,11 @@ public class PrincipalForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu Cadastro;
-    private javax.swing.JMenu Editar;
-    private javax.swing.JMenu Excluir;
-    private javax.swing.JMenu Pesquisar;
+    private javax.swing.JMenu Opcoes;
+    private javax.swing.JMenu Venda;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem mnCadastroCliente;
     private javax.swing.JMenuItem mnCadastroFornecedor;
     private javax.swing.JMenuItem mnCadastroProduto;
-    private javax.swing.JMenuItem mnEditarCliente;
-    private javax.swing.JMenuItem mnEditarFornecedor;
-    private javax.swing.JMenuItem mnEditarProduto;
-    private javax.swing.JMenuItem mnExcluirCliente;
-    private javax.swing.JMenuItem mnExcluirFornecedor;
-    private javax.swing.JMenuItem mnExcluirProduto;
-    private javax.swing.JMenuItem mnPesquisarCliente;
-    private javax.swing.JMenuItem mnPesquisarFornecedor;
-    private javax.swing.JMenuItem mnPesquisarProduto;
     // End of variables declaration//GEN-END:variables
 }

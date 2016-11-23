@@ -5,122 +5,191 @@
  */
 package br.edu.uricer.dao;
 
+import br.edu.uricer.dao.exceptions.NonexistentEntityException;
 import br.edu.uricer.model.Produto;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.io.Serializable;
+import javax.persistence.Query;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import br.edu.uricer.model.Venda;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 /**
  *
  * @author renan
  */
-public class ProdutoDAO {
+public class ProdutoDAO implements Serializable {
 
-    private Connection con;
+    public ProdutoDAO(EntityManagerFactory emf) {
+        this.emf = emf;
+    }
+    private EntityManagerFactory emf = null;
 
-    public ProdutoDAO(Connection con) {
-        this.con = con;
+    public EntityManager getEntityManager() {
+        return emf.createEntityManager();
     }
 
-    public Integer create(Produto produto) throws SQLException {
-        String sql = "insert into Produtos(nome, preco_venda, preco_custo) values (?,?,?)";
-        Integer idCriado = 0;
-        try (PreparedStatement stm = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stm.setString(1, produto.getNome());
-            stm.setBigDecimal(2, produto.getPrecoVenda());
-            stm.setBigDecimal(3, produto.getPrecoCusto());
-            stm.execute();
-
-            try (ResultSet resultSet = stm.getGeneratedKeys()) {
-                while (resultSet.next()) {
-                    idCriado = resultSet.getInt(1);
+    public Integer create(Produto produto) {
+        Integer idCriado;
+        if (produto.getVendaCollection() == null) {
+            produto.setVendaCollection(new ArrayList<Venda>());
+        }
+        EntityManager em = null;
+        try {
+            em = getEntityManager();
+            em.getTransaction().begin();
+            Collection<Venda> attachedVendaCollection = new ArrayList<Venda>();
+            for (Venda vendaCollectionVendaToAttach : produto.getVendaCollection()) {
+                vendaCollectionVendaToAttach = em.getReference(vendaCollectionVendaToAttach.getClass(), vendaCollectionVendaToAttach.getId());
+                attachedVendaCollection.add(vendaCollectionVendaToAttach);
+            }
+            produto.setVendaCollection(attachedVendaCollection);
+            em.persist(produto);
+            
+            for (Venda vendaCollectionVenda : produto.getVendaCollection()) {
+                Produto oldIdProdOfVendaCollectionVenda = vendaCollectionVenda.getIdProd();
+                vendaCollectionVenda.setIdProd(produto);
+                vendaCollectionVenda = em.merge(vendaCollectionVenda);
+                if (oldIdProdOfVendaCollectionVenda != null) {
+                    oldIdProdOfVendaCollectionVenda.getVendaCollection().remove(vendaCollectionVenda);
+                    oldIdProdOfVendaCollectionVenda = em.merge(oldIdProdOfVendaCollectionVenda);
                 }
             }
-            con.commit();
-        } catch (Exception ex) {
-            System.out.println("Erro ao tentar executar insercao: " + ex.getMessage());
-            con.rollback();
+            em.getTransaction().commit();
+        } finally {
+            if (em != null) {
+                em.close();
+            }
+            idCriado = produto.getId();
+            return idCriado;
         }
-
-        return idCriado;
     }
 
-    public Produto findById(Integer id) throws SQLException {
-        String sql = "Select * from produtos p where p.id = ?";
-        Produto produto = null;
-        try (PreparedStatement stm = con.prepareStatement(sql)) {
-            stm.setInt(1, id);
-            stm.execute();
-
-            try (ResultSet resultSet = stm.getResultSet()) {
-                while (resultSet.next()) {
-                    produto = new Produto();
-                    produto.setId(resultSet.getInt("id"));
-                    produto.setNome(resultSet.getString("nome"));
-                    produto.setPrecoVenda(resultSet.getBigDecimal("preco_venda"));
-                    produto.setPrecoCusto(resultSet.getBigDecimal("preco_custo"));
+    public void edit(Produto produto) throws NonexistentEntityException, Exception {
+        EntityManager em = null;
+        try {
+            em = getEntityManager();
+            em.getTransaction().begin();
+            Produto persistentProduto = em.find(Produto.class, produto.getId());
+            Collection<Venda> vendaCollectionOld = persistentProduto.getVendaCollection();
+            Collection<Venda> vendaCollectionNew = produto.getVendaCollection();
+            Collection<Venda> attachedVendaCollectionNew = new ArrayList<Venda>();
+            for (Venda vendaCollectionNewVendaToAttach : vendaCollectionNew) {
+                vendaCollectionNewVendaToAttach = em.getReference(vendaCollectionNewVendaToAttach.getClass(), vendaCollectionNewVendaToAttach.getId());
+                attachedVendaCollectionNew.add(vendaCollectionNewVendaToAttach);
+            }
+            vendaCollectionNew = attachedVendaCollectionNew;
+            produto.setVendaCollection(vendaCollectionNew);
+            produto = em.merge(produto);
+            for (Venda vendaCollectionOldVenda : vendaCollectionOld) {
+                if (!vendaCollectionNew.contains(vendaCollectionOldVenda)) {
+                    vendaCollectionOldVenda.setIdProd(null);
+                    vendaCollectionOldVenda = em.merge(vendaCollectionOldVenda);
                 }
             }
-        }
-
-        return produto;
-    }
-
-    public List<Produto> findByNome(String nome) throws SQLException {
-        String sql = "Select * from produtos p where upper(p.nome) like ?";
-        List<Produto> produtos = new ArrayList<>();
-        Produto produto = null;
-        try (PreparedStatement stm = con.prepareStatement(sql)) {
-
-            stm.setString(1, "%" + nome.toUpperCase() + "%");
-            stm.execute();
-
-            try (ResultSet resultSet = stm.getResultSet()) {
-                while (resultSet.next()) {
-                    produto = new Produto();
-                    produto.setId(resultSet.getInt("id"));
-                    produto.setNome(resultSet.getString("nome"));
-                    produto.setPrecoVenda(resultSet.getBigDecimal("preco_venda"));
-                    produto.setPrecoCusto(resultSet.getBigDecimal("preco_custo"));
-                    produtos.add(produto);
+            for (Venda vendaCollectionNewVenda : vendaCollectionNew) {
+                if (!vendaCollectionOld.contains(vendaCollectionNewVenda)) {
+                    Produto oldIdProdOfVendaCollectionNewVenda = vendaCollectionNewVenda.getIdProd();
+                    vendaCollectionNewVenda.setIdProd(produto);
+                    vendaCollectionNewVenda = em.merge(vendaCollectionNewVenda);
+                    if (oldIdProdOfVendaCollectionNewVenda != null && !oldIdProdOfVendaCollectionNewVenda.equals(produto)) {
+                        oldIdProdOfVendaCollectionNewVenda.getVendaCollection().remove(vendaCollectionNewVenda);
+                        oldIdProdOfVendaCollectionNewVenda = em.merge(oldIdProdOfVendaCollectionNewVenda);
+                    }
                 }
             }
-        }
-
-        return produtos;
-    }
-
-    public void update(Produto produto) throws SQLException {
-        String sql = "update produtos set nome = ?, preco_venda = ?, preco_custo = ? where id = ?";
-
-        try (PreparedStatement stm = con.prepareStatement(sql)) {
-            stm.setString(1, produto.getNome());
-            stm.setBigDecimal(2, produto.getPrecoVenda());
-            stm.setBigDecimal(3, produto.getPrecoCusto());
-            stm.setInt(4, produto.getId());
-            stm.executeUpdate();
-
-            con.commit();
+            em.getTransaction().commit();
         } catch (Exception ex) {
-            System.out.println("Erro ao tentar executar atualização: " + ex.getMessage());
-            con.rollback();
+            String msg = ex.getLocalizedMessage();
+            if (msg == null || msg.length() == 0) {
+                Integer id = produto.getId();
+                if (findProduto(id) == null) {
+                    throw new NonexistentEntityException("The produto with id " + id + " no longer exists.");
+                }
+            }
+            throw ex;
+        } finally {
+            if (em != null) {
+                em.close();
+            }
         }
     }
 
-    public void delete(Produto produto) throws SQLException {
-        String sql = "delete from produtos where id = ?";
-
-        try (PreparedStatement stm = con.prepareStatement(sql)) {
-            stm.setInt(1, produto.getId());
-            stm.executeUpdate();
-
-            con.commit();
-        } catch (Exception ex) {
-            System.out.println("Erro ao tentar excluir: " + ex.getMessage());
-            con.rollback();
+    public void destroy(Integer id) throws NonexistentEntityException {
+        EntityManager em = null;
+        try {
+            em = getEntityManager();
+            em.getTransaction().begin();
+            Produto produto;
+            try {
+                produto = em.getReference(Produto.class, id);
+                produto.getId();
+            } catch (EntityNotFoundException enfe) {
+                throw new NonexistentEntityException("The produto with id " + id + " no longer exists.", enfe);
+            }
+            Collection<Venda> vendaCollection = produto.getVendaCollection();
+            for (Venda vendaCollectionVenda : vendaCollection) {
+                vendaCollectionVenda.setIdProd(null);
+                vendaCollectionVenda = em.merge(vendaCollectionVenda);
+            }
+            em.remove(produto);
+            em.getTransaction().commit();
+        } finally {
+            if (em != null) {
+                em.close();
+            }
         }
     }
+
+    public List<Produto> findProdutoEntities() {
+        return findProdutoEntities(true, -1, -1);
+    }
+
+    public List<Produto> findProdutoEntities(int maxResults, int firstResult) {
+        return findProdutoEntities(false, maxResults, firstResult);
+    }
+
+    private List<Produto> findProdutoEntities(boolean all, int maxResults, int firstResult) {
+        EntityManager em = getEntityManager();
+        try {
+            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+            cq.select(cq.from(Produto.class));
+            Query q = em.createQuery(cq);
+            if (!all) {
+                q.setMaxResults(maxResults);
+                q.setFirstResult(firstResult);
+            }
+            return q.getResultList();
+        } finally {
+            em.close();
+        }
+    }
+
+    public Produto findProduto(Integer id) {
+        EntityManager em = getEntityManager();
+        try {
+            return em.find(Produto.class, id);
+        } finally {
+            em.close();
+        }
+    }
+
+    public int getProdutoCount() {
+        EntityManager em = getEntityManager();
+        try {
+            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
+            Root<Produto> rt = cq.from(Produto.class);
+            cq.select(em.getCriteriaBuilder().count(rt));
+            Query q = em.createQuery(cq);
+            return ((Long) q.getSingleResult()).intValue();
+        } finally {
+            em.close();
+        }
+    }
+    
 }

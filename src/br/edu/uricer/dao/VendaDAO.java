@@ -34,37 +34,37 @@ public class VendaDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Venda vendas) {
+    public void create(Venda venda) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Cliente idCli = vendas.getIdCli();
+            Cliente idCli = venda.getIdCli();
             if (idCli != null) {
                 idCli = em.getReference(idCli.getClass(), idCli.getId());
-                vendas.setIdCli(idCli);
+                venda.setIdCli(idCli);
             }
-            Fornecedor idFornec = vendas.getIdFornec();
+            Fornecedor idFornec = venda.getIdFornec();
             if (idFornec != null) {
                 idFornec = em.getReference(idFornec.getClass(), idFornec.getId());
-                vendas.setIdFornec(idFornec);
+                venda.setIdFornec(idFornec);
             }
-            Produto idProd = vendas.getIdProd();
+            Produto idProd = venda.getIdProd();
             if (idProd != null) {
                 idProd = em.getReference(idProd.getClass(), idProd.getId());
-                vendas.setIdProd(idProd);
+                venda.setIdProd(idProd);
             }
-            em.persist(vendas);
+            em.persist(venda);
             if (idCli != null) {
-                idCli.getVendasCollection().add(vendas);
+                idCli.getVendaCollection().add(venda);
                 idCli = em.merge(idCli);
             }
             if (idFornec != null) {
-                idFornec.getVendasCollection().add(vendas);
+                idFornec.getVendaCollection().add(venda);
                 idFornec = em.merge(idFornec);
             }
             if (idProd != null) {
-                idProd.getVendasCollection().add(vendas);
+                idProd.getVendaCollection().add(venda);
                 idProd = em.merge(idProd);
             }
             em.getTransaction().commit();
@@ -75,62 +75,62 @@ public class VendaDAO implements Serializable {
         }
     }
 
-    public void edit(Venda vendas) throws NonexistentEntityException, Exception {
+    public void edit(Venda venda) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Venda persistentVendas = em.find(Venda.class, vendas.getId());
-            Cliente idCliOld = persistentVendas.getIdCli();
-            Cliente idCliNew = vendas.getIdCli();
-            Fornecedor idFornecOld = persistentVendas.getIdFornec();
-            Fornecedor idFornecNew = vendas.getIdFornec();
-            Produto idProdOld = persistentVendas.getIdProd();
-            Produto idProdNew = vendas.getIdProd();
+            Venda persistentVenda = em.find(Venda.class, venda.getId());
+            Cliente idCliOld = persistentVenda.getIdCli();
+            Cliente idCliNew = venda.getIdCli();
+            Fornecedor idFornecOld = persistentVenda.getIdFornec();
+            Fornecedor idFornecNew = venda.getIdFornec();
+            Produto idProdOld = persistentVenda.getIdProd();
+            Produto idProdNew = venda.getIdProd();
             if (idCliNew != null) {
                 idCliNew = em.getReference(idCliNew.getClass(), idCliNew.getId());
-                vendas.setIdCli(idCliNew);
+                venda.setIdCli(idCliNew);
             }
             if (idFornecNew != null) {
                 idFornecNew = em.getReference(idFornecNew.getClass(), idFornecNew.getId());
-                vendas.setIdFornec(idFornecNew);
+                venda.setIdFornec(idFornecNew);
             }
             if (idProdNew != null) {
                 idProdNew = em.getReference(idProdNew.getClass(), idProdNew.getId());
-                vendas.setIdProd(idProdNew);
+                venda.setIdProd(idProdNew);
             }
-            vendas = em.merge(vendas);
+            venda = em.merge(venda);
             if (idCliOld != null && !idCliOld.equals(idCliNew)) {
-                idCliOld.getVendasCollection().remove(vendas);
+                idCliOld.getVendaCollection().remove(venda);
                 idCliOld = em.merge(idCliOld);
             }
             if (idCliNew != null && !idCliNew.equals(idCliOld)) {
-                idCliNew.getVendasCollection().add(vendas);
+                idCliNew.getVendaCollection().add(venda);
                 idCliNew = em.merge(idCliNew);
             }
             if (idFornecOld != null && !idFornecOld.equals(idFornecNew)) {
-                idFornecOld.getVendasCollection().remove(vendas);
+                idFornecOld.getVendaCollection().remove(venda);
                 idFornecOld = em.merge(idFornecOld);
             }
             if (idFornecNew != null && !idFornecNew.equals(idFornecOld)) {
-                idFornecNew.getVendasCollection().add(vendas);
+                idFornecNew.getVendaCollection().add(venda);
                 idFornecNew = em.merge(idFornecNew);
             }
             if (idProdOld != null && !idProdOld.equals(idProdNew)) {
-                idProdOld.getVendasCollection().remove(vendas);
+                idProdOld.getVendaCollection().remove(venda);
                 idProdOld = em.merge(idProdOld);
             }
             if (idProdNew != null && !idProdNew.equals(idProdOld)) {
-                idProdNew.getVendasCollection().add(vendas);
+                idProdNew.getVendaCollection().add(venda);
                 idProdNew = em.merge(idProdNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = vendas.getId();
-                if (findVendas(id) == null) {
-                    throw new NonexistentEntityException("The vendas with id " + id + " no longer exists.");
+                Integer id = venda.getId();
+                if (findVenda(id) == null) {
+                    throw new NonexistentEntityException("The venda with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -146,29 +146,29 @@ public class VendaDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Venda vendas;
+            Venda venda;
             try {
-                vendas = em.getReference(Venda.class, id);
-                vendas.getId();
+                venda = em.getReference(Venda.class, id);
+                venda.getId();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The vendas with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The venda with id " + id + " no longer exists.", enfe);
             }
-            Cliente idCli = vendas.getIdCli();
+            Cliente idCli = venda.getIdCli();
             if (idCli != null) {
-                idCli.getVendasCollection().remove(vendas);
+                idCli.getVendaCollection().remove(venda);
                 idCli = em.merge(idCli);
             }
-            Fornecedor idFornec = vendas.getIdFornec();
+            Fornecedor idFornec = venda.getIdFornec();
             if (idFornec != null) {
-                idFornec.getVendasCollection().remove(vendas);
+                idFornec.getVendaCollection().remove(venda);
                 idFornec = em.merge(idFornec);
             }
-            Produto idProd = vendas.getIdProd();
+            Produto idProd = venda.getIdProd();
             if (idProd != null) {
-                idProd.getVendasCollection().remove(vendas);
+                idProd.getVendaCollection().remove(venda);
                 idProd = em.merge(idProd);
             }
-            em.remove(vendas);
+            em.remove(venda);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -177,15 +177,15 @@ public class VendaDAO implements Serializable {
         }
     }
 
-    public List<Venda> findVendasEntities() {
-        return findVendasEntities(true, -1, -1);
+    public List<Venda> findVendaEntities() {
+        return findVendaEntities(true, -1, -1);
     }
 
-    public List<Venda> findVendasEntities(int maxResults, int firstResult) {
-        return findVendasEntities(false, maxResults, firstResult);
+    public List<Venda> findVendaEntities(int maxResults, int firstResult) {
+        return findVendaEntities(false, maxResults, firstResult);
     }
 
-    private List<Venda> findVendasEntities(boolean all, int maxResults, int firstResult) {
+    private List<Venda> findVendaEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
@@ -201,7 +201,7 @@ public class VendaDAO implements Serializable {
         }
     }
 
-    public Venda findVendas(Integer id) {
+    public Venda findVenda(Integer id) {
         EntityManager em = getEntityManager();
         try {
             return em.find(Venda.class, id);
@@ -210,7 +210,7 @@ public class VendaDAO implements Serializable {
         }
     }
 
-    public int getVendasCount() {
+    public int getVendaCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();

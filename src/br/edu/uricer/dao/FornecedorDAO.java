@@ -34,28 +34,28 @@ public class FornecedorDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Fornecedor fornecedores) {
-        if (fornecedores.getVendasCollection() == null) {
-            fornecedores.setVendasCollection(new ArrayList<Venda>());
+    public void create(Fornecedor fornecedor) {
+        if (fornecedor.getVendaCollection() == null) {
+            fornecedor.setVendaCollection(new ArrayList<Venda>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Collection<Venda> attachedVendasCollection = new ArrayList<Venda>();
-            for (Venda vendasCollectionVendasToAttach : fornecedores.getVendasCollection()) {
-                vendasCollectionVendasToAttach = em.getReference(vendasCollectionVendasToAttach.getClass(), vendasCollectionVendasToAttach.getId());
-                attachedVendasCollection.add(vendasCollectionVendasToAttach);
+            Collection<Venda> attachedVendaCollection = new ArrayList<Venda>();
+            for (Venda vendaCollectionVendaToAttach : fornecedor.getVendaCollection()) {
+                vendaCollectionVendaToAttach = em.getReference(vendaCollectionVendaToAttach.getClass(), vendaCollectionVendaToAttach.getId());
+                attachedVendaCollection.add(vendaCollectionVendaToAttach);
             }
-            fornecedores.setVendasCollection(attachedVendasCollection);
-            em.persist(fornecedores);
-            for (Venda vendasCollectionVendas : fornecedores.getVendasCollection()) {
-                Fornecedor oldIdFornecOfVendasCollectionVendas = vendasCollectionVendas.getIdFornec();
-                vendasCollectionVendas.setIdFornec(fornecedores);
-                vendasCollectionVendas = em.merge(vendasCollectionVendas);
-                if (oldIdFornecOfVendasCollectionVendas != null) {
-                    oldIdFornecOfVendasCollectionVendas.getVendasCollection().remove(vendasCollectionVendas);
-                    oldIdFornecOfVendasCollectionVendas = em.merge(oldIdFornecOfVendasCollectionVendas);
+            fornecedor.setVendaCollection(attachedVendaCollection);
+            em.persist(fornecedor);
+            for (Venda vendaCollectionVenda : fornecedor.getVendaCollection()) {
+                Fornecedor oldIdFornecOfVendaCollectionVenda = vendaCollectionVenda.getIdFornec();
+                vendaCollectionVenda.setIdFornec(fornecedor);
+                vendaCollectionVenda = em.merge(vendaCollectionVenda);
+                if (oldIdFornecOfVendaCollectionVenda != null) {
+                    oldIdFornecOfVendaCollectionVenda.getVendaCollection().remove(vendaCollectionVenda);
+                    oldIdFornecOfVendaCollectionVenda = em.merge(oldIdFornecOfVendaCollectionVenda);
                 }
             }
             em.getTransaction().commit();
@@ -66,36 +66,36 @@ public class FornecedorDAO implements Serializable {
         }
     }
 
-    public void edit(Fornecedor fornecedores) throws NonexistentEntityException, Exception {
+    public void edit(Fornecedor fornecedor) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Fornecedor persistentFornecedores = em.find(Fornecedor.class, fornecedores.getId());
-            Collection<Venda> vendasCollectionOld = persistentFornecedores.getVendasCollection();
-            Collection<Venda> vendasCollectionNew = fornecedores.getVendasCollection();
-            Collection<Venda> attachedVendasCollectionNew = new ArrayList<Venda>();
-            for (Venda vendasCollectionNewVendasToAttach : vendasCollectionNew) {
-                vendasCollectionNewVendasToAttach = em.getReference(vendasCollectionNewVendasToAttach.getClass(), vendasCollectionNewVendasToAttach.getId());
-                attachedVendasCollectionNew.add(vendasCollectionNewVendasToAttach);
+            Fornecedor persistentFornecedor = em.find(Fornecedor.class, fornecedor.getId());
+            Collection<Venda> vendaCollectionOld = persistentFornecedor.getVendaCollection();
+            Collection<Venda> vendaCollectionNew = fornecedor.getVendaCollection();
+            Collection<Venda> attachedVendaCollectionNew = new ArrayList<Venda>();
+            for (Venda vendaCollectionNewVendaToAttach : vendaCollectionNew) {
+                vendaCollectionNewVendaToAttach = em.getReference(vendaCollectionNewVendaToAttach.getClass(), vendaCollectionNewVendaToAttach.getId());
+                attachedVendaCollectionNew.add(vendaCollectionNewVendaToAttach);
             }
-            vendasCollectionNew = attachedVendasCollectionNew;
-            fornecedores.setVendasCollection(vendasCollectionNew);
-            fornecedores = em.merge(fornecedores);
-            for (Venda vendasCollectionOldVendas : vendasCollectionOld) {
-                if (!vendasCollectionNew.contains(vendasCollectionOldVendas)) {
-                    vendasCollectionOldVendas.setIdFornec(null);
-                    vendasCollectionOldVendas = em.merge(vendasCollectionOldVendas);
+            vendaCollectionNew = attachedVendaCollectionNew;
+            fornecedor.setVendaCollection(vendaCollectionNew);
+            fornecedor = em.merge(fornecedor);
+            for (Venda vendaCollectionOldVenda : vendaCollectionOld) {
+                if (!vendaCollectionNew.contains(vendaCollectionOldVenda)) {
+                    vendaCollectionOldVenda.setIdFornec(null);
+                    vendaCollectionOldVenda = em.merge(vendaCollectionOldVenda);
                 }
             }
-            for (Venda vendasCollectionNewVendas : vendasCollectionNew) {
-                if (!vendasCollectionOld.contains(vendasCollectionNewVendas)) {
-                    Fornecedor oldIdFornecOfVendasCollectionNewVendas = vendasCollectionNewVendas.getIdFornec();
-                    vendasCollectionNewVendas.setIdFornec(fornecedores);
-                    vendasCollectionNewVendas = em.merge(vendasCollectionNewVendas);
-                    if (oldIdFornecOfVendasCollectionNewVendas != null && !oldIdFornecOfVendasCollectionNewVendas.equals(fornecedores)) {
-                        oldIdFornecOfVendasCollectionNewVendas.getVendasCollection().remove(vendasCollectionNewVendas);
-                        oldIdFornecOfVendasCollectionNewVendas = em.merge(oldIdFornecOfVendasCollectionNewVendas);
+            for (Venda vendaCollectionNewVenda : vendaCollectionNew) {
+                if (!vendaCollectionOld.contains(vendaCollectionNewVenda)) {
+                    Fornecedor oldIdFornecOfVendaCollectionNewVenda = vendaCollectionNewVenda.getIdFornec();
+                    vendaCollectionNewVenda.setIdFornec(fornecedor);
+                    vendaCollectionNewVenda = em.merge(vendaCollectionNewVenda);
+                    if (oldIdFornecOfVendaCollectionNewVenda != null && !oldIdFornecOfVendaCollectionNewVenda.equals(fornecedor)) {
+                        oldIdFornecOfVendaCollectionNewVenda.getVendaCollection().remove(vendaCollectionNewVenda);
+                        oldIdFornecOfVendaCollectionNewVenda = em.merge(oldIdFornecOfVendaCollectionNewVenda);
                     }
                 }
             }
@@ -103,9 +103,9 @@ public class FornecedorDAO implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = fornecedores.getId();
-                if (findFornecedores(id) == null) {
-                    throw new NonexistentEntityException("The fornecedores with id " + id + " no longer exists.");
+                Integer id = fornecedor.getId();
+                if (findFornecedor(id) == null) {
+                    throw new NonexistentEntityException("The fornecedor with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -121,19 +121,19 @@ public class FornecedorDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Fornecedor fornecedores;
+            Fornecedor fornecedor;
             try {
-                fornecedores = em.getReference(Fornecedor.class, id);
-                fornecedores.getId();
+                fornecedor = em.getReference(Fornecedor.class, id);
+                fornecedor.getId();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The fornecedores with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The fornecedor with id " + id + " no longer exists.", enfe);
             }
-            Collection<Venda> vendasCollection = fornecedores.getVendasCollection();
-            for (Venda vendasCollectionVendas : vendasCollection) {
-                vendasCollectionVendas.setIdFornec(null);
-                vendasCollectionVendas = em.merge(vendasCollectionVendas);
+            Collection<Venda> vendaCollection = fornecedor.getVendaCollection();
+            for (Venda vendaCollectionVenda : vendaCollection) {
+                vendaCollectionVenda.setIdFornec(null);
+                vendaCollectionVenda = em.merge(vendaCollectionVenda);
             }
-            em.remove(fornecedores);
+            em.remove(fornecedor);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -142,15 +142,15 @@ public class FornecedorDAO implements Serializable {
         }
     }
 
-    public List<Fornecedor> findFornecedoresEntities() {
-        return findFornecedoresEntities(true, -1, -1);
+    public List<Fornecedor> findFornecedorEntities() {
+        return findFornecedorEntities(true, -1, -1);
     }
 
-    public List<Fornecedor> findFornecedoresEntities(int maxResults, int firstResult) {
-        return findFornecedoresEntities(false, maxResults, firstResult);
+    public List<Fornecedor> findFornecedorEntities(int maxResults, int firstResult) {
+        return findFornecedorEntities(false, maxResults, firstResult);
     }
 
-    private List<Fornecedor> findFornecedoresEntities(boolean all, int maxResults, int firstResult) {
+    private List<Fornecedor> findFornecedorEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
@@ -166,7 +166,7 @@ public class FornecedorDAO implements Serializable {
         }
     }
 
-    public Fornecedor findFornecedores(Integer id) {
+    public Fornecedor findFornecedor(Integer id) {
         EntityManager em = getEntityManager();
         try {
             return em.find(Fornecedor.class, id);
@@ -175,7 +175,7 @@ public class FornecedorDAO implements Serializable {
         }
     }
 
-    public int getFornecedoresCount() {
+    public int getFornecedorCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();

@@ -28,10 +28,10 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "FORNECEDORES")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Fornecedores.findAll", query = "SELECT f FROM Fornecedores f"),
-    @NamedQuery(name = "Fornecedores.findById", query = "SELECT f FROM Fornecedores f WHERE f.id = :id"),
-    @NamedQuery(name = "Fornecedores.findByNome", query = "SELECT f FROM Fornecedores f WHERE f.nome = :nome"),
-    @NamedQuery(name = "Fornecedores.findByCidade", query = "SELECT f FROM Fornecedores f WHERE f.cidade = :cidade")})
+    @NamedQuery(name = "Fornecedor.findAll", query = "SELECT f FROM Fornecedor f"),
+    @NamedQuery(name = "Fornecedor.findById", query = "SELECT f FROM Fornecedor f WHERE f.id = :id"),
+    @NamedQuery(name = "Fornecedor.findByNome", query = "SELECT f FROM Fornecedor f WHERE f.nome = :nome"),
+    @NamedQuery(name = "Fornecedor.findByCidade", query = "SELECT f FROM Fornecedor f WHERE f.cidade = :cidade")})
 public class Fornecedor implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -45,7 +45,7 @@ public class Fornecedor implements Serializable {
     @Column(name = "CIDADE")
     private String cidade;
     @OneToMany(mappedBy = "idFornec")
-    private Collection<Venda> vendasCollection;
+    private Collection<Venda> vendaCollection;
 
     public Fornecedor() {
     }
@@ -79,12 +79,12 @@ public class Fornecedor implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Venda> getVendasCollection() {
-        return vendasCollection;
+    public Collection<Venda> getVendaCollection() {
+        return vendaCollection;
     }
 
-    public void setVendasCollection(Collection<Venda> vendasCollection) {
-        this.vendasCollection = vendasCollection;
+    public void setVendaCollection(Collection<Venda> vendaCollection) {
+        this.vendaCollection = vendaCollection;
     }
 
     @Override
@@ -109,7 +109,7 @@ public class Fornecedor implements Serializable {
 
     @Override
     public String toString() {
-        return "br.edu.uricer.model.Fornecedores[ id=" + id + " ]";
+        return "br.edu.uricer.model.Fornecedor[ id=" + id + " ]";
     }
     
 }

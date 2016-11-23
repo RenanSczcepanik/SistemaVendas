@@ -34,28 +34,28 @@ public class ClienteDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Cliente clientes) {
-        if (clientes.getVendasCollection() == null) {
-            clientes.setVendasCollection(new ArrayList<Venda>());
+    public void create(Cliente cliente) {
+        if (cliente.getVendaCollection() == null) {
+            cliente.setVendaCollection(new ArrayList<Venda>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Collection<Venda> attachedVendasCollection = new ArrayList<Venda>();
-            for (Venda vendasCollectionVendasToAttach : clientes.getVendasCollection()) {
-                vendasCollectionVendasToAttach = em.getReference(vendasCollectionVendasToAttach.getClass(), vendasCollectionVendasToAttach.getId());
-                attachedVendasCollection.add(vendasCollectionVendasToAttach);
+            Collection<Venda> attachedVendaCollection = new ArrayList<Venda>();
+            for (Venda vendaCollectionVendaToAttach : cliente.getVendaCollection()) {
+                vendaCollectionVendaToAttach = em.getReference(vendaCollectionVendaToAttach.getClass(), vendaCollectionVendaToAttach.getId());
+                attachedVendaCollection.add(vendaCollectionVendaToAttach);
             }
-            clientes.setVendasCollection(attachedVendasCollection);
-            em.persist(clientes);
-            for (Venda vendasCollectionVendas : clientes.getVendasCollection()) {
-                Cliente oldIdCliOfVendasCollectionVendas = vendasCollectionVendas.getIdCli();
-                vendasCollectionVendas.setIdCli(clientes);
-                vendasCollectionVendas = em.merge(vendasCollectionVendas);
-                if (oldIdCliOfVendasCollectionVendas != null) {
-                    oldIdCliOfVendasCollectionVendas.getVendasCollection().remove(vendasCollectionVendas);
-                    oldIdCliOfVendasCollectionVendas = em.merge(oldIdCliOfVendasCollectionVendas);
+            cliente.setVendaCollection(attachedVendaCollection);
+            em.persist(cliente);
+            for (Venda vendaCollectionVenda : cliente.getVendaCollection()) {
+                Cliente oldIdCliOfVendaCollectionVenda = vendaCollectionVenda.getIdCli();
+                vendaCollectionVenda.setIdCli(cliente);
+                vendaCollectionVenda = em.merge(vendaCollectionVenda);
+                if (oldIdCliOfVendaCollectionVenda != null) {
+                    oldIdCliOfVendaCollectionVenda.getVendaCollection().remove(vendaCollectionVenda);
+                    oldIdCliOfVendaCollectionVenda = em.merge(oldIdCliOfVendaCollectionVenda);
                 }
             }
             em.getTransaction().commit();
@@ -66,36 +66,36 @@ public class ClienteDAO implements Serializable {
         }
     }
 
-    public void edit(Cliente clientes) throws NonexistentEntityException, Exception {
+    public void edit(Cliente cliente) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Cliente persistentClientes = em.find(Cliente.class, clientes.getId());
-            Collection<Venda> vendasCollectionOld = persistentClientes.getVendasCollection();
-            Collection<Venda> vendasCollectionNew = clientes.getVendasCollection();
-            Collection<Venda> attachedVendasCollectionNew = new ArrayList<Venda>();
-            for (Venda vendasCollectionNewVendasToAttach : vendasCollectionNew) {
-                vendasCollectionNewVendasToAttach = em.getReference(vendasCollectionNewVendasToAttach.getClass(), vendasCollectionNewVendasToAttach.getId());
-                attachedVendasCollectionNew.add(vendasCollectionNewVendasToAttach);
+            Cliente persistentCliente = em.find(Cliente.class, cliente.getId());
+            Collection<Venda> vendaCollectionOld = persistentCliente.getVendaCollection();
+            Collection<Venda> vendaCollectionNew = cliente.getVendaCollection();
+            Collection<Venda> attachedVendaCollectionNew = new ArrayList<Venda>();
+            for (Venda vendaCollectionNewVendaToAttach : vendaCollectionNew) {
+                vendaCollectionNewVendaToAttach = em.getReference(vendaCollectionNewVendaToAttach.getClass(), vendaCollectionNewVendaToAttach.getId());
+                attachedVendaCollectionNew.add(vendaCollectionNewVendaToAttach);
             }
-            vendasCollectionNew = attachedVendasCollectionNew;
-            clientes.setVendasCollection(vendasCollectionNew);
-            clientes = em.merge(clientes);
-            for (Venda vendasCollectionOldVendas : vendasCollectionOld) {
-                if (!vendasCollectionNew.contains(vendasCollectionOldVendas)) {
-                    vendasCollectionOldVendas.setIdCli(null);
-                    vendasCollectionOldVendas = em.merge(vendasCollectionOldVendas);
+            vendaCollectionNew = attachedVendaCollectionNew;
+            cliente.setVendaCollection(vendaCollectionNew);
+            cliente = em.merge(cliente);
+            for (Venda vendaCollectionOldVenda : vendaCollectionOld) {
+                if (!vendaCollectionNew.contains(vendaCollectionOldVenda)) {
+                    vendaCollectionOldVenda.setIdCli(null);
+                    vendaCollectionOldVenda = em.merge(vendaCollectionOldVenda);
                 }
             }
-            for (Venda vendasCollectionNewVendas : vendasCollectionNew) {
-                if (!vendasCollectionOld.contains(vendasCollectionNewVendas)) {
-                    Cliente oldIdCliOfVendasCollectionNewVendas = vendasCollectionNewVendas.getIdCli();
-                    vendasCollectionNewVendas.setIdCli(clientes);
-                    vendasCollectionNewVendas = em.merge(vendasCollectionNewVendas);
-                    if (oldIdCliOfVendasCollectionNewVendas != null && !oldIdCliOfVendasCollectionNewVendas.equals(clientes)) {
-                        oldIdCliOfVendasCollectionNewVendas.getVendasCollection().remove(vendasCollectionNewVendas);
-                        oldIdCliOfVendasCollectionNewVendas = em.merge(oldIdCliOfVendasCollectionNewVendas);
+            for (Venda vendaCollectionNewVenda : vendaCollectionNew) {
+                if (!vendaCollectionOld.contains(vendaCollectionNewVenda)) {
+                    Cliente oldIdCliOfVendaCollectionNewVenda = vendaCollectionNewVenda.getIdCli();
+                    vendaCollectionNewVenda.setIdCli(cliente);
+                    vendaCollectionNewVenda = em.merge(vendaCollectionNewVenda);
+                    if (oldIdCliOfVendaCollectionNewVenda != null && !oldIdCliOfVendaCollectionNewVenda.equals(cliente)) {
+                        oldIdCliOfVendaCollectionNewVenda.getVendaCollection().remove(vendaCollectionNewVenda);
+                        oldIdCliOfVendaCollectionNewVenda = em.merge(oldIdCliOfVendaCollectionNewVenda);
                     }
                 }
             }
@@ -103,9 +103,9 @@ public class ClienteDAO implements Serializable {
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = clientes.getId();
-                if (findClientes(id) == null) {
-                    throw new NonexistentEntityException("The clientes with id " + id + " no longer exists.");
+                Integer id = cliente.getId();
+                if (findCliente(id) == null) {
+                    throw new NonexistentEntityException("The cliente with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -121,19 +121,19 @@ public class ClienteDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Cliente clientes;
+            Cliente cliente;
             try {
-                clientes = em.getReference(Cliente.class, id);
-                clientes.getId();
+                cliente = em.getReference(Cliente.class, id);
+                cliente.getId();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The clientes with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The cliente with id " + id + " no longer exists.", enfe);
             }
-            Collection<Venda> vendasCollection = clientes.getVendasCollection();
-            for (Venda vendasCollectionVendas : vendasCollection) {
-                vendasCollectionVendas.setIdCli(null);
-                vendasCollectionVendas = em.merge(vendasCollectionVendas);
+            Collection<Venda> vendaCollection = cliente.getVendaCollection();
+            for (Venda vendaCollectionVenda : vendaCollection) {
+                vendaCollectionVenda.setIdCli(null);
+                vendaCollectionVenda = em.merge(vendaCollectionVenda);
             }
-            em.remove(clientes);
+            em.remove(cliente);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -142,15 +142,15 @@ public class ClienteDAO implements Serializable {
         }
     }
 
-    public List<Cliente> findClientesEntities() {
-        return findClientesEntities(true, -1, -1);
+    public List<Cliente> findClienteEntities() {
+        return findClienteEntities(true, -1, -1);
     }
 
-    public List<Cliente> findClientesEntities(int maxResults, int firstResult) {
-        return findClientesEntities(false, maxResults, firstResult);
+    public List<Cliente> findClienteEntities(int maxResults, int firstResult) {
+        return findClienteEntities(false, maxResults, firstResult);
     }
 
-    private List<Cliente> findClientesEntities(boolean all, int maxResults, int firstResult) {
+    private List<Cliente> findClienteEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
@@ -166,7 +166,7 @@ public class ClienteDAO implements Serializable {
         }
     }
 
-    public Cliente findClientes(Integer id) {
+    public Cliente findCliente(Integer id) {
         EntityManager em = getEntityManager();
         try {
             return em.find(Cliente.class, id);
@@ -175,7 +175,7 @@ public class ClienteDAO implements Serializable {
         }
     }
 
-    public int getClientesCount() {
+    public int getClienteCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();

@@ -27,8 +27,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "VENDAS")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Vendas.findAll", query = "SELECT v FROM Vendas v"),
-    @NamedQuery(name = "Vendas.findById", query = "SELECT v FROM Vendas v WHERE v.id = :id")})
+    @NamedQuery(name = "Venda.findAll", query = "SELECT v FROM Venda v"),
+    @NamedQuery(name = "Venda.findById", query = "SELECT v FROM Venda v WHERE v.id = :id")})
 public class Venda implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -108,7 +108,7 @@ public class Venda implements Serializable {
 
     @Override
     public String toString() {
-        return "br.edu.uricer.model.Vendas[ id=" + id + " ]";
+        return "br.edu.uricer.model.Venda[ id=" + id + " ]";
     }
     
 }

@@ -29,16 +29,12 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "PRODUTOS")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Produtos.findAll", query = "SELECT p FROM Produtos p"),
-    @NamedQuery(name = "Produtos.findById", query = "SELECT p FROM Produtos p WHERE p.id = :id"),
-    @NamedQuery(name = "Produtos.findByNome", query = "SELECT p FROM Produtos p WHERE p.nome = :nome"),
-    @NamedQuery(name = "Produtos.findByValor", query = "SELECT p FROM Produtos p WHERE p.valor = :valor")})
+    @NamedQuery(name = "Produto.findAll", query = "SELECT p FROM Produto p"),
+    @NamedQuery(name = "Produto.findById", query = "SELECT p FROM Produto p WHERE p.id = :id"),
+    @NamedQuery(name = "Produto.findByNome", query = "SELECT p FROM Produto p WHERE p.nome = :nome"),
+    @NamedQuery(name = "Produto.findByPrecoVenda", query = "SELECT p FROM Produto p WHERE p.precoVenda = :precoVenda"),
+    @NamedQuery(name = "Produto.findByPrecoCusto", query = "SELECT p FROM Produto p WHERE p.precoCusto = :precoCusto")})
 public class Produto implements Serializable {
-
-    @Column(name = "PRECO_VENDA")
-    private BigDecimal precoVenda;
-    @Column(name = "PRECO_CUSTO")
-    private BigDecimal precoCusto;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -49,10 +45,12 @@ public class Produto implements Serializable {
     @Column(name = "NOME")
     private String nome;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "VALOR")
-    private BigDecimal valor;
+    @Column(name = "PRECO_VENDA")
+    private BigDecimal precoVenda;
+    @Column(name = "PRECO_CUSTO")
+    private BigDecimal precoCusto;
     @OneToMany(mappedBy = "idProd")
-    private Collection<Venda> vendasCollection;
+    private Collection<Venda> vendaCollection;
 
     public Produto() {
     }
@@ -77,21 +75,29 @@ public class Produto implements Serializable {
         this.nome = nome;
     }
 
-    public BigDecimal getValor() {
-        return valor;
+    public BigDecimal getPrecoVenda() {
+        return precoVenda;
     }
 
-    public void setValor(BigDecimal valor) {
-        this.valor = valor;
+    public void setPrecoVenda(BigDecimal precoVenda) {
+        this.precoVenda = precoVenda;
+    }
+
+    public BigDecimal getPrecoCusto() {
+        return precoCusto;
+    }
+
+    public void setPrecoCusto(BigDecimal precoCusto) {
+        this.precoCusto = precoCusto;
     }
 
     @XmlTransient
-    public Collection<Venda> getVendasCollection() {
-        return vendasCollection;
+    public Collection<Venda> getVendaCollection() {
+        return vendaCollection;
     }
 
-    public void setVendasCollection(Collection<Venda> vendasCollection) {
-        this.vendasCollection = vendasCollection;
+    public void setVendaCollection(Collection<Venda> vendaCollection) {
+        this.vendaCollection = vendaCollection;
     }
 
     @Override
@@ -116,23 +122,7 @@ public class Produto implements Serializable {
 
     @Override
     public String toString() {
-        return "br.edu.uricer.model.Produtos[ id=" + id + " ]";
-    }
-
-    public BigDecimal getPrecoVenda() {
-        return precoVenda;
-    }
-
-    public void setPrecoVenda(BigDecimal precoVenda) {
-        this.precoVenda = precoVenda;
-    }
-
-    public BigDecimal getPrecoCusto() {
-        return precoCusto;
-    }
-
-    public void setPrecoCusto(BigDecimal precoCusto) {
-        this.precoCusto = precoCusto;
+        return "[ id=" + id + "Nome:" + nome + "Preco_Venda" + precoVenda + " ]";
     }
     
 }
