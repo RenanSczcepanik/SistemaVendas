@@ -6,6 +6,7 @@
 package br.edu.uricer.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,7 +29,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Venda.findAll", query = "SELECT v FROM Venda v"),
-    @NamedQuery(name = "Venda.findById", query = "SELECT v FROM Venda v WHERE v.id = :id")})
+    @NamedQuery(name = "Venda.findById", query = "SELECT v FROM Venda v WHERE v.id = :id"),
+    @NamedQuery(name = "Venda.findByValorVenda", query = "SELECT v FROM Venda v WHERE v.valorVenda = :valorVenda")})
 public class Venda implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -37,6 +39,9 @@ public class Venda implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID")
     private Integer id;
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "VALOR_VENDA")
+    private BigDecimal valorVenda;
     @JoinColumn(name = "ID_CLI", referencedColumnName = "ID")
     @ManyToOne
     private Cliente idCli;
@@ -60,6 +65,14 @@ public class Venda implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public BigDecimal getValorVenda() {
+        return valorVenda;
+    }
+
+    public void setValorVenda(BigDecimal valorVenda) {
+        this.valorVenda = valorVenda;
     }
 
     public Cliente getIdCli() {

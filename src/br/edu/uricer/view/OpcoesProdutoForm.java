@@ -26,11 +26,24 @@ public class OpcoesProdutoForm extends javax.swing.JFrame {
      */
     public OpcoesProdutoForm() {
         initComponents();
+        inicializar();
     }
-    private void inicializar(){
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("SistemaVendasPU");        
+
+    private void inicializar() {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("SistemaVendasPU");
         produtoDAO = new ProdutoDAO(emf);
+        
+        edNomeProduto.setEnabled(false);
+        edPrecoCusto.setEnabled(false);
+        edPrecoVenda.setEnabled(false);
+        edId.setEnabled(false);
+        btNovo.setEnabled(true);
+        btPesquisar.setEnabled(true);
+        btGravar.setEnabled(false);
+        btCancelar.setEnabled(false);
+        btExcluir.setEnabled(false);
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -53,6 +66,8 @@ public class OpcoesProdutoForm extends javax.swing.JFrame {
         btCancelar = new javax.swing.JButton();
         btPesquisar = new javax.swing.JButton();
         btExcluir = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -79,10 +94,19 @@ public class OpcoesProdutoForm extends javax.swing.JFrame {
         });
 
         btCancelar.setText("Cancelar");
+        btCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btCancelarActionPerformed(evt);
+            }
+        });
 
         btPesquisar.setText("Pesquisar");
 
         btExcluir.setText("Excluir");
+
+        jLabel5.setText("R$ 00.00");
+
+        jLabel6.setText("R$ 00.00");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -100,9 +124,8 @@ public class OpcoesProdutoForm extends javax.swing.JFrame {
                                     .addComponent(jLabel4)
                                     .addComponent(jLabel3)))))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
                         .addComponent(btNovo)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(18, 18, 18)
                         .addComponent(btGravar)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -112,15 +135,19 @@ public class OpcoesProdutoForm extends javax.swing.JFrame {
                             .addComponent(edId, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(edPrecoVenda, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
-                                .addComponent(edPrecoCusto, javax.swing.GroupLayout.Alignment.LEADING))))
+                                .addComponent(edPrecoCusto, javax.swing.GroupLayout.Alignment.LEADING)))
+                        .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btPesquisar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
-                        .addComponent(btExcluir)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btCancelar)))
-                .addContainerGap())
+                        .addGap(10, 10, 10)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel5)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btPesquisar)
+                                .addGap(24, 24, 24)
+                                .addComponent(btExcluir))
+                            .addComponent(jLabel6))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                        .addComponent(btCancelar))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -132,11 +159,13 @@ public class OpcoesProdutoForm extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(edPrecoCusto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(edPrecoCusto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(edPrecoVenda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(edPrecoVenda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
@@ -158,25 +187,38 @@ public class OpcoesProdutoForm extends javax.swing.JFrame {
         // TODO add your handling code here:
         produto = new Produto();
         limparEdits();
+        edNomeProduto.grabFocus();
+        edNomeProduto.setEnabled(true);
+        edPrecoCusto.setEnabled(true);
+        edPrecoVenda.setEnabled(true);
+        btNovo.setEnabled(false);
+        btGravar.setEnabled(true);
+        btCancelar.setEnabled(true);
+        btExcluir.setEnabled(false);
     }//GEN-LAST:event_btNovoActionPerformed
 
     private void btGravarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btGravarActionPerformed
         // TODO add your handling code here:
         editParaProduto();
-        
-            if(produto.getId() == null || produto.getId() == 0) {
-                Integer id = produtoDAO.create(produto);
-                edId.setText(id.toString());
+        Integer id = produtoDAO.create(produto);
+        edId.setText(id.toString());
 
-            } 
-            
+        btNovo.setEnabled(true);
+        btCancelar.setEnabled(true);
 
-            btNovo.setEnabled(true);
-            btCancelar.setEnabled(true);
+        JOptionPane.showMessageDialog(this, "Gravado com sucesso! id: " + id, "Informação", JOptionPane.INFORMATION_MESSAGE);
 
-            JOptionPane.showMessageDialog(this, "Gravado com sucesso", "Informação", JOptionPane.INFORMATION_MESSAGE);
-        
     }//GEN-LAST:event_btGravarActionPerformed
+
+    private void btCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCancelarActionPerformed
+        // TODO add your handling code here:
+        produto = null;
+        limparEdits();
+        btNovo.setEnabled(true);
+        btGravar.setEnabled(false);
+        btCancelar.setEnabled(false);
+        btExcluir.setEnabled(false);
+    }//GEN-LAST:event_btCancelarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -228,6 +270,8 @@ public class OpcoesProdutoForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     // End of variables declaration//GEN-END:variables
     private Produto produto;
     private ProdutoDAO produtoDAO;
@@ -240,7 +284,7 @@ public class OpcoesProdutoForm extends javax.swing.JFrame {
     }
 
     private void editParaProduto() {
-        if (edId.getText() != null && !edId.getText().isEmpty()) {
+        if(edId.getText() != null && !edId.getText().isEmpty()) {
             produto.setId(Integer.parseInt(edId.getText()));
         }
         produto.setNome(edNomeProduto.getText());

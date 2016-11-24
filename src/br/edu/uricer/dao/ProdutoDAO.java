@@ -61,12 +61,12 @@ public class ProdutoDAO implements Serializable {
                 }
             }
             em.getTransaction().commit();
+            idCriado = produto.getId();
+            return idCriado;
         } finally {
             if (em != null) {
                 em.close();
-            }
-            idCriado = produto.getId();
-            return idCriado;
+            }            
         }
     }
 

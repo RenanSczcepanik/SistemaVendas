@@ -43,17 +43,13 @@ public class TestaProdutoDAO {
         System.out.println("Pesquisada por nome");
         System.out.println("fds"+ produto.toString());
         
-/*
+        
         System.out.println("Testa Update");
 
-        List<Produto> produtosParaAtualizar = produtoDAO.findByNome("obama");
-        Produto produtoParaAtualizar = produtosParaAtualizar.get(0);
-        System.out.println("Pessoa antes de atualizar " + produtoParaAtualizar);
-        produtoParaAtualizar.setNome("Michele Obama");
-        produtoDAO.update(produtoParaAtualizar);
-        produtoParaAtualizar = produtoDAO.findById(17);
-        System.out.println("Pessoa após atualizar " + produtoParaAtualizar);
-*/
+        Produto produtosParaAtualizar = new Produto();
+        
+      
+
         
         
        
