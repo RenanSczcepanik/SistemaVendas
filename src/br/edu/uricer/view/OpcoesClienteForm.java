@@ -252,7 +252,13 @@ public class OpcoesClienteForm extends javax.swing.JFrame {
             atualizarTabela();
 
             JOptionPane.showMessageDialog(this, "Gravado com sucesso! id: " + id, "Informação", JOptionPane.INFORMATION_MESSAGE);
+
+            edNomeCli.setEnabled(false);
+            edCidadeCli.setEnabled(false);
+            btNovo.setEnabled(true);
             btGravar.setEnabled(false);
+            btCancelar.setEnabled(true);
+            btExcluir.setEnabled(false);
         }
     }//GEN-LAST:event_btGravarActionPerformed
 
@@ -266,6 +272,12 @@ public class OpcoesClienteForm extends javax.swing.JFrame {
             Logger.getLogger(OpcoesProdutoForm.class.getName()).log(Level.SEVERE, null, ex);
         }
         atualizarTabela();
+        edNomeCli.setEnabled(false);
+        edCidadeCli.setEnabled(false);
+        btNovo.setEnabled(true);
+        btGravar.setEnabled(false);
+        btCancelar.setEnabled(true);
+        btExcluir.setEnabled(false);
     }//GEN-LAST:event_btEditarActionPerformed
 
     private void btExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btExcluirActionPerformed
@@ -282,6 +294,11 @@ public class OpcoesClienteForm extends javax.swing.JFrame {
             }
             atualizarTabela();
         }
+        btNovo.setEnabled(true);
+        btEditar.setEnabled(false);
+        btExcluir.setEnabled(false);
+        edNomeCli.setEnabled(false);
+        edCidadeCli.setEnabled(false);
     }//GEN-LAST:event_btExcluirActionPerformed
 
     private void btCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCancelarActionPerformed
@@ -389,7 +406,8 @@ public class OpcoesClienteForm extends javax.swing.JFrame {
         edNomeCli.setText(cliente.getNome());
         edCidadeCli.setText(cliente.getCidade());
     }
-    private void atualizarTabela(){
+
+    private void atualizarTabela() {
         clientes = clienteDAO.findClienteEntities();
         clienteTM.setClientes(clientes);
         clienteTM.fireTableDataChanged();

@@ -31,7 +31,7 @@ public class VendaTableModel extends AbstractTableModel{
 
     @Override
     public int getColumnCount() {
-        return 5;
+        return 6;
     }
 
     @Override
@@ -48,6 +48,8 @@ public class VendaTableModel extends AbstractTableModel{
                 return venda.getIdProd().getNome();
             case 4:
                 return venda.getValorVenda();
+            case 5:
+                return venda.getQtdItens();
             default:
                 throw new AssertionError();
         }
@@ -65,9 +67,10 @@ public class VendaTableModel extends AbstractTableModel{
             case 3:
                 return "Nome Produto";
             case 4:
-                return "Qtd Produtos";
+                return "Valor Total";
             case 5:
-                return "Valor Venda";
+                return "Qtd Produtos";
+            
             default:
                 throw new AssertionError();
         }

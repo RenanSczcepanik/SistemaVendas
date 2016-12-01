@@ -39,9 +39,7 @@ public class OpcoesProdutoForm extends javax.swing.JFrame {
         produtoTableModel = new ProdutoTableModel(produtos);
         tbProdutos.setModel(produtoTableModel);
 
-        produtos = produtoDAO.findProdutoEntities();
-        produtoTableModel.setProdutos(produtos);
-        produtoTableModel.fireTableDataChanged();
+        atualizarTabela();
 
         edNomeProduto.setEnabled(false);
         edPrecoCusto.setEnabled(false);
@@ -69,9 +67,7 @@ public class OpcoesProdutoForm extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         edPrecoCusto = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
         edPrecoVenda = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         edId = new javax.swing.JTextField();
         btNovo = new javax.swing.JButton();
@@ -89,10 +85,6 @@ public class OpcoesProdutoForm extends javax.swing.JFrame {
         jLabel2.setText("Preço de Custo:");
 
         jLabel3.setText("Preço de Venda:");
-
-        jLabel5.setText("R$ 00.00");
-
-        jLabel6.setText("R$ 00.00");
 
         jLabel4.setText("Id:");
 
@@ -173,13 +165,7 @@ public class OpcoesProdutoForm extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(painelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(edPrecoVenda, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
-                                    .addComponent(edPrecoCusto))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel5))
-                            .addGroup(painelPrincipalLayout.createSequentialGroup()
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(110, 110, 110)
-                                .addComponent(jLabel6))
+                                    .addComponent(edPrecoCusto)))
                             .addGroup(painelPrincipalLayout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -195,7 +181,8 @@ public class OpcoesProdutoForm extends javax.swing.JFrame {
                                     .addComponent(btExcluir)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(btCancelar))
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel3))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -206,30 +193,28 @@ public class OpcoesProdutoForm extends javax.swing.JFrame {
                 .addGroup(painelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(edNomeProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(painelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(edPrecoCusto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
-                .addGap(18, 18, 18)
+                    .addComponent(edPrecoCusto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(painelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(edPrecoVenda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6))
+                    .addComponent(edPrecoVenda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(painelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(edId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(painelPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btNovo)
                     .addComponent(btGravar)
                     .addComponent(btEditar)
                     .addComponent(btExcluir)
                     .addComponent(btCancelar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -270,12 +255,18 @@ public class OpcoesProdutoForm extends javax.swing.JFrame {
         btNovo.setEnabled(true);
         btCancelar.setEnabled(true);
 
-        produtos = produtoDAO.findProdutoEntities();
-        produtoTableModel.setProdutos(produtos);
-        produtoTableModel.fireTableDataChanged();
+        atualizarTabela();
 
         JOptionPane.showMessageDialog(this, "Gravado com sucesso! id: " + id, "Informação", JOptionPane.INFORMATION_MESSAGE);
+        
+        edNomeProduto.setEnabled(false);
+        edPrecoCusto.setEnabled(false);
+        edPrecoVenda.setEnabled(false);
+        btEditar.setEnabled(false);
+        btNovo.setEnabled(true);
         btGravar.setEnabled(false);
+        btCancelar.setEnabled(true);
+        btExcluir.setEnabled(false);
 
     }//GEN-LAST:event_btGravarActionPerformed
 
@@ -300,9 +291,7 @@ public class OpcoesProdutoForm extends javax.swing.JFrame {
             Logger.getLogger(OpcoesProdutoForm.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        produtos = produtoDAO.findProdutoEntities();
-        produtoTableModel.setProdutos(produtos);
-        produtoTableModel.fireTableDataChanged();
+        atualizarTabela();
 
     }//GEN-LAST:event_btEditarActionPerformed
 
@@ -335,9 +324,15 @@ public class OpcoesProdutoForm extends javax.swing.JFrame {
             } catch (NonexistentEntityException ex) {
                 Logger.getLogger(OpcoesProdutoForm.class.getName()).log(Level.SEVERE, null, ex);
             }
-            produtos = produtoDAO.findProdutoEntities();
-            produtoTableModel.setProdutos(produtos);
-            produtoTableModel.fireTableDataChanged();
+            atualizarTabela();
+            edNomeProduto.setEnabled(false);
+            edPrecoCusto.setEnabled(false);
+            edPrecoVenda.setEnabled(false);
+            btEditar.setEnabled(false);
+            btNovo.setEnabled(true);
+            btGravar.setEnabled(false);
+            btCancelar.setEnabled(true);
+            btExcluir.setEnabled(false);
         }
     }//GEN-LAST:event_btExcluirActionPerformed
 
@@ -391,8 +386,6 @@ public class OpcoesProdutoForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel painelPrincipal;
     private javax.swing.JTable tbProdutos;
@@ -421,7 +414,7 @@ public class OpcoesProdutoForm extends javax.swing.JFrame {
     }
 
     private void produtoParaEdit() {
-        
+
         String custo = produto.getPrecoCusto().toString();
         String venda = produto.getPrecoVenda().toString();
 
@@ -429,5 +422,11 @@ public class OpcoesProdutoForm extends javax.swing.JFrame {
         edNomeProduto.setText(produto.getNome());
         edPrecoCusto.setText(custo);
         edPrecoVenda.setText(venda);
+    }
+
+    private void atualizarTabela() {
+        produtos = produtoDAO.findProdutoEntities();
+        produtoTableModel.setProdutos(produtos);
+        produtoTableModel.fireTableDataChanged();
     }
 }

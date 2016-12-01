@@ -38,9 +38,7 @@ public class OpcoesFornecedorForm extends javax.swing.JFrame {
         fornecTableModel = new FornecedorTableModel(fornecs);
         tbFornecs.setModel(fornecTableModel);
 
-        fornecs = fornecDAO.findFornecedorEntities();
-        fornecTableModel.setFornecs(fornecs);
-        fornecTableModel.fireTableDataChanged();
+        atualizarTabela();
 
         edNomeFor.setEnabled(false);
         edCidadeFor.setEnabled(false);
@@ -239,9 +237,7 @@ public class OpcoesFornecedorForm extends javax.swing.JFrame {
             Logger.getLogger(OpcoesProdutoForm.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        fornecs = fornecDAO.findFornecedorEntities();
-        fornecTableModel.setFornecs(fornecs);
-        fornecTableModel.fireTableDataChanged();
+        atualizarTabela();
     }//GEN-LAST:event_btEditarActionPerformed
 
     private void btGravarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btGravarActionPerformed
@@ -255,9 +251,7 @@ public class OpcoesFornecedorForm extends javax.swing.JFrame {
             btNovo.setEnabled(true);
             btCancelar.setEnabled(true);
 
-            fornecs = fornecDAO.findFornecedorEntities();
-            fornecTableModel.setFornecs(fornecs);
-            fornecTableModel.fireTableDataChanged();
+            atualizarTabela();
 
             JOptionPane.showMessageDialog(this, "Gravado com sucesso! id: " + id, "Informação", JOptionPane.INFORMATION_MESSAGE);
             btGravar.setEnabled(false);
@@ -276,9 +270,14 @@ public class OpcoesFornecedorForm extends javax.swing.JFrame {
             } catch (NonexistentEntityException ex) {
                 Logger.getLogger(OpcoesFornecedorForm.class.getName()).log(Level.SEVERE, null, ex);
             }
-            fornecs = fornecDAO.findFornecedorEntities();
-            fornecTableModel.setFornecs(fornecs);
-            fornecTableModel.fireTableDataChanged();
+            atualizarTabela();
+            edNomeFor.setEnabled(false);
+            edCidadeFor.setEnabled(false);
+            btNovo.setEnabled(true);
+            btGravar.setEnabled(false);
+            btCancelar.setEnabled(true);
+            btExcluir.setEnabled(false);
+            btEditar.setEnabled(false);
         }
     }//GEN-LAST:event_btExcluirActionPerformed
 
@@ -286,6 +285,8 @@ public class OpcoesFornecedorForm extends javax.swing.JFrame {
         // TODO add your handling code here:
         fornec = null;
         limparEdits();
+        edNomeFor.setEnabled(false);
+        edCidadeFor.setEnabled(false);
         btNovo.setEnabled(true);
         btGravar.setEnabled(false);
         btCancelar.setEnabled(false);
@@ -389,4 +390,9 @@ public class OpcoesFornecedorForm extends javax.swing.JFrame {
         edCidadeFor.setText(fornec.getCidade());
     }
 
+    private void atualizarTabela() {
+        fornecs = fornecDAO.findFornecedorEntities();
+        fornecTableModel.setFornecs(fornecs);
+        fornecTableModel.fireTableDataChanged();
+    }
 }

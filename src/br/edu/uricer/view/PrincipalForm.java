@@ -9,6 +9,7 @@ import br.edu.uricer.dao.ClienteDAO;
 import br.edu.uricer.dao.FornecedorDAO;
 import br.edu.uricer.dao.ProdutoDAO;
 import br.edu.uricer.dao.VendaDAO;
+import br.edu.uricer.dao.exceptions.NonexistentEntityException;
 import br.edu.uricer.model.Cliente;
 import br.edu.uricer.model.Fornecedor;
 import br.edu.uricer.model.Produto;
@@ -16,6 +17,8 @@ import br.edu.uricer.model.Venda;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.swing.JOptionPane;
@@ -43,9 +46,7 @@ public class PrincipalForm extends javax.swing.JFrame {
         vendaTM = new VendaTableModel(vendas);
         tbVendas.setModel(vendaTM);
 
-        vendas = vendaDAO.findVendaEntities();
-        vendaTM.setVendas(vendas);
-        vendaTM.fireTableDataChanged();
+        atualizarTabela();
 
         edVenda.setEnabled(false);
         edFornec.setEnabled(false);
@@ -54,7 +55,7 @@ public class PrincipalForm extends javax.swing.JFrame {
         edValorTotal.setEnabled(false);
         edCliente.setEnabled(false);
         btNovo.setEnabled(true);
-        btEditar.setEnabled(false);
+        
         btGravar.setEnabled(false);
         btCancelar.setEnabled(false);
         btExcluir.setEnabled(false);
@@ -73,7 +74,6 @@ public class PrincipalForm extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         edVenda = new javax.swing.JTextField();
         btNovo = new javax.swing.JButton();
-        btEditar = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         edProduto = new javax.swing.JTextField();
@@ -104,13 +104,6 @@ public class PrincipalForm extends javax.swing.JFrame {
         btNovo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btNovoActionPerformed(evt);
-            }
-        });
-
-        btEditar.setText("Editar");
-        btEditar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btEditarActionPerformed(evt);
             }
         });
 
@@ -187,22 +180,21 @@ public class PrincipalForm extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel4))
                             .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(7, 7, 7)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(edProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(edFornec, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 181, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 174, Short.MAX_VALUE)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING)))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btNovo)
-                        .addGap(18, 18, 18)
+                        .addGap(50, 50, 50)
                         .addComponent(btGravar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btEditar)
-                        .addGap(18, 18, 18)
+                        .addGap(52, 52, 52)
                         .addComponent(btExcluir)
-                        .addGap(37, 37, 37)
+                        .addGap(51, 51, 51)
                         .addComponent(btCancelar)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -240,7 +232,6 @@ public class PrincipalForm extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btNovo)
                     .addComponent(btGravar)
-                    .addComponent(btEditar)
                     .addComponent(btExcluir)
                     .addComponent(btCancelar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
@@ -316,7 +307,7 @@ public class PrincipalForm extends javax.swing.JFrame {
         // TODO add your handling code here:
         venda = new Venda();
         limparEdits();
-        edFornec.grabFocus();
+        edProduto.grabFocus();
         edVenda.setEnabled(false);
         edFornec.setEnabled(true);
         edProduto.setEnabled(true);
@@ -324,7 +315,7 @@ public class PrincipalForm extends javax.swing.JFrame {
         edValorTotal.setEnabled(false);
         edCliente.setEnabled(true);
         btNovo.setEnabled(false);
-        btEditar.setEnabled(false);
+        
         btGravar.setEnabled(true);
         btCancelar.setEnabled(true);
         btExcluir.setEnabled(false);
@@ -340,28 +331,86 @@ public class PrincipalForm extends javax.swing.JFrame {
         btNovo.setEnabled(true);
         btCancelar.setEnabled(true);
 
-        vendas = vendaDAO.findVendaEntities();
-        vendaTM.setVendas(vendas);
-        vendaTM.fireTableDataChanged();
+        atualizarTabela();
 
         JOptionPane.showMessageDialog(this, "Gravado com sucesso! id: " + id, "Informação", JOptionPane.INFORMATION_MESSAGE);
+        
+        edVenda.setEnabled(false);
+        edFornec.setEnabled(false);
+        edProduto.setEnabled(false);
+        edQtdProdutos.setEnabled(false);
+        edValorTotal.setEnabled(false);
+        edCliente.setEnabled(false);
+        btNovo.setEnabled(true);
+        
         btGravar.setEnabled(false);
+        btCancelar.setEnabled(false);
+        btExcluir.setEnabled(false);
     }//GEN-LAST:event_btGravarActionPerformed
-
-    private void btEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btEditarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btEditarActionPerformed
 
     private void btExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btExcluirActionPerformed
         // TODO add your handling code here:
+        int resultado = JOptionPane.showConfirmDialog(this, "Confirma exclusão", "Confirmação", JOptionPane.YES_NO_CANCEL_OPTION);
+        if (resultado == 0) {
+            editParaVenda();
+            int i = Integer.parseInt(edVenda.getText());
+            try {
+                vendaDAO.destroy(i);
+                JOptionPane.showMessageDialog(this, "Excluido com sucesso", "Informação", JOptionPane.INFORMATION_MESSAGE);
+            } catch (NonexistentEntityException ex) {
+                Logger.getLogger(OpcoesClienteForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            atualizarTabela();
+        }
+        
+        edVenda.setEnabled(false);
+        edFornec.setEnabled(false);
+        edProduto.setEnabled(false);
+        edQtdProdutos.setEnabled(false);
+        edValorTotal.setEnabled(false);
+        edCliente.setEnabled(false);
+        btNovo.setEnabled(true);
+        
+        btGravar.setEnabled(false);
+        btCancelar.setEnabled(false);
+        btExcluir.setEnabled(false);
     }//GEN-LAST:event_btExcluirActionPerformed
 
     private void btCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCancelarActionPerformed
         // TODO add your handling code here:
+        venda = null;
+        limparEdits();
+        
+        edVenda.setEnabled(false);
+        edFornec.setEnabled(false);
+        edProduto.setEnabled(false);
+        edQtdProdutos.setEnabled(false);
+        edValorTotal.setEnabled(false);
+        edCliente.setEnabled(false);
+        btNovo.setEnabled(true);
+        
+        btGravar.setEnabled(false);
+        btCancelar.setEnabled(false);
+        btExcluir.setEnabled(false);
     }//GEN-LAST:event_btCancelarActionPerformed
 
     private void tbVendasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbVendasMouseClicked
         // TODO add your handling code here:
+        if (evt.getClickCount() == 2) {
+            venda = vendas.get(tbVendas.getSelectedRow());
+            vendaParaEdit();
+        }
+        edVenda.setEnabled(false);
+        edFornec.setEnabled(true);
+        edProduto.setEnabled(true);
+        edQtdProdutos.setEnabled(true);
+        edValorTotal.setEnabled(false);
+        edCliente.setEnabled(true);
+        btNovo.setEnabled(false);
+        
+        btGravar.setEnabled(false);
+        btCancelar.setEnabled(true);
+        btExcluir.setEnabled(true);
     }//GEN-LAST:event_tbVendasMouseClicked
 
     /**
@@ -402,7 +451,6 @@ public class PrincipalForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu Opcoes;
     private javax.swing.JButton btCancelar;
-    private javax.swing.JButton btEditar;
     private javax.swing.JButton btExcluir;
     private javax.swing.JButton btGravar;
     private javax.swing.JButton btNovo;
@@ -477,8 +525,11 @@ public class PrincipalForm extends javax.swing.JFrame {
         edProduto.setText(venda.getIdProd().getId().toString());
         edCliente.setText(venda.getIdCli().getId().toString());
         edQtdProdutos.setText(venda.getQtdItens().toString());
-        edValorTotal.setText(venda.getValorVenda().toString());
-        
-        
+        edValorTotal.setText(venda.getValorVenda().toString());                
+    }
+    private void atualizarTabela(){
+        vendas = vendaDAO.findVendaEntities();
+        vendaTM.setVendas(vendas);
+        vendaTM.fireTableDataChanged();
     }
 }
