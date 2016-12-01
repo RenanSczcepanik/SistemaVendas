@@ -10,6 +10,7 @@ import br.edu.uricer.dao.exceptions.NonexistentEntityException;
 import br.edu.uricer.model.Produto;
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -46,11 +47,26 @@ public class TestaProdutoDAO {
         
         System.out.println("Testa Update");
 
-        Produto produtosParaAtualizar = new Produto();
+        Produto nProduto = new Produto();
+        
         
       
 
+        List<Produto> produtos =  new ArrayList();
         
+        produtos = produtoDAO.findProdutoEntities();
+        System.out.println("Produtos");
+        for (Produto p : produtos) {
+            System.out.println(p);
+        }
+        
+        System.out.println("Por id:");
+        
+        produto = produtoDAO.findProduto(3);
+        
+        System.out.println(produto);
+        
+       
         
        
         

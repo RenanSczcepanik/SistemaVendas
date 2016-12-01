@@ -5,6 +5,17 @@
  */
 package br.edu.uricer.view;
 
+import br.edu.uricer.dao.ClienteDAO;
+import br.edu.uricer.dao.exceptions.NonexistentEntityException;
+import br.edu.uricer.model.Cliente;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author renan
@@ -16,6 +27,27 @@ public class OpcoesClienteForm extends javax.swing.JFrame {
      */
     public OpcoesClienteForm() {
         initComponents();
+        inicializar();
+    }
+
+    private void inicializar() {
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("SistemaVendasPU");
+        clienteDAO = new ClienteDAO(emf);
+        cliente = new Cliente();
+        clientes = new ArrayList<Cliente>();
+        clienteTM = new ClienteTableModel(clientes);
+        tbClientes.setModel(clienteTM);
+
+        atualizarTabela();
+
+        edNomeCli.setEnabled(false);
+        edCidadeCli.setEnabled(false);
+        edIdCli.setEnabled(false);
+        btNovo.setEnabled(true);
+        btEditar.setEnabled(false);
+        btGravar.setEnabled(false);
+        btCancelar.setEnabled(false);
+        btExcluir.setEnabled(false);
     }
 
     /**
@@ -27,22 +59,257 @@ public class OpcoesClienteForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        edNomeCli = new javax.swing.JTextField();
+        edCidadeCli = new javax.swing.JTextField();
+        edIdCli = new javax.swing.JTextField();
+        btNovo = new javax.swing.JButton();
+        btGravar = new javax.swing.JButton();
+        btEditar = new javax.swing.JButton();
+        btExcluir = new javax.swing.JButton();
+        btCancelar = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tbClientes = new javax.swing.JTable();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Cadastro Novo Cliente");
+
+        jLabel1.setText("Nome:");
+
+        jLabel2.setText("Cidade:");
+
+        jLabel3.setText("Id:");
+
+        edCidadeCli.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                edCidadeCliActionPerformed(evt);
+            }
+        });
+
+        btNovo.setText("Novo");
+        btNovo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btNovoActionPerformed(evt);
+            }
+        });
+
+        btGravar.setText("Gravar");
+        btGravar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btGravarActionPerformed(evt);
+            }
+        });
+
+        btEditar.setText("Editar");
+        btEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btEditarActionPerformed(evt);
+            }
+        });
+
+        btExcluir.setText("Excluir");
+        btExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btExcluirActionPerformed(evt);
+            }
+        });
+
+        btCancelar.setText("Cancelar");
+        btCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btCancelarActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btNovo)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel2)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING))
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btGravar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btEditar)
+                        .addGap(12, 12, 12)
+                        .addComponent(btExcluir)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btCancelar)
+                        .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(edIdCli, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(edCidadeCli, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(edNomeCli)))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(edNomeCli, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(edCidadeCli, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(edIdCli, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(27, 27, 27)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btNovo)
+                    .addComponent(btGravar)
+                    .addComponent(btEditar)
+                    .addComponent(btExcluir)
+                    .addComponent(btCancelar))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        tbClientes.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tbClientes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbClientesMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tbClientes);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 1, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void edCidadeCliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_edCidadeCliActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_edCidadeCliActionPerformed
+
+    private void btNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btNovoActionPerformed
+        // TODO add your handling code here:
+        cliente = new Cliente();
+        limparEdits();
+        edNomeCli.grabFocus();
+        edNomeCli.setEnabled(true);
+        edCidadeCli.setEnabled(true);
+        btNovo.setEnabled(false);
+        btGravar.setEnabled(true);
+        btCancelar.setEnabled(true);
+        btExcluir.setEnabled(false);
+    }//GEN-LAST:event_btNovoActionPerformed
+
+    private void btGravarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btGravarActionPerformed
+        // TODO add your handling code here:
+        int resultado = JOptionPane.showConfirmDialog(this, "Confirma Gravação", "Confirmação", JOptionPane.YES_NO_CANCEL_OPTION);
+        if (resultado == 0) {
+            editParaCliente();
+            Integer id = clienteDAO.create(cliente);
+            edIdCli.setText(id.toString());
+
+            btNovo.setEnabled(true);
+            btCancelar.setEnabled(true);
+
+            atualizarTabela();
+
+            JOptionPane.showMessageDialog(this, "Gravado com sucesso! id: " + id, "Informação", JOptionPane.INFORMATION_MESSAGE);
+            btGravar.setEnabled(false);
+        }
+    }//GEN-LAST:event_btGravarActionPerformed
+
+    private void btEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btEditarActionPerformed
+        // TODO add your handling code here:
+        editParaCliente();
+        try {
+            clienteDAO.edit(cliente);
+            JOptionPane.showMessageDialog(this, "Editado com sucesso", "Informação", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception ex) {
+            Logger.getLogger(OpcoesProdutoForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        atualizarTabela();
+    }//GEN-LAST:event_btEditarActionPerformed
+
+    private void btExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btExcluirActionPerformed
+        // TODO add your handling code here:
+        int resultado = JOptionPane.showConfirmDialog(this, "Confirma exclusão", "Confirmação", JOptionPane.YES_NO_CANCEL_OPTION);
+        if (resultado == 0) {
+            editParaCliente();
+            int i = Integer.parseInt(edIdCli.getText());
+            try {
+                clienteDAO.destroy(i);
+                JOptionPane.showMessageDialog(this, "Excluido com sucesso", "Informação", JOptionPane.INFORMATION_MESSAGE);
+            } catch (NonexistentEntityException ex) {
+                Logger.getLogger(OpcoesClienteForm.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            atualizarTabela();
+        }
+    }//GEN-LAST:event_btExcluirActionPerformed
+
+    private void btCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btCancelarActionPerformed
+        // TODO add your handling code here:
+        cliente = null;
+        limparEdits();
+        btNovo.setEnabled(true);
+        btGravar.setEnabled(false);
+        btCancelar.setEnabled(false);
+        btExcluir.setEnabled(false);
+        btEditar.setEnabled(false);
+    }//GEN-LAST:event_btCancelarActionPerformed
+
+    private void tbClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbClientesMouseClicked
+        // TODO add your handling code here:
+        if (evt.getClickCount() == 2) {
+            cliente = clientes.get(tbClientes.getSelectedRow());
+            clienteParaEdit();
+
+            edNomeCli.setEnabled(true);
+            edCidadeCli.setEnabled(true);
+            btEditar.setEnabled(true);
+            btNovo.setEnabled(false);
+            btGravar.setEnabled(false);
+            btCancelar.setEnabled(true);
+            btExcluir.setEnabled(true);
+        }
+    }//GEN-LAST:event_tbClientesMouseClicked
 
     /**
      * @param args the command line arguments
@@ -81,5 +348,50 @@ public class OpcoesClienteForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btCancelar;
+    private javax.swing.JButton btEditar;
+    private javax.swing.JButton btExcluir;
+    private javax.swing.JButton btGravar;
+    private javax.swing.JButton btNovo;
+    private javax.swing.JTextField edCidadeCli;
+    private javax.swing.JTextField edIdCli;
+    private javax.swing.JTextField edNomeCli;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tbClientes;
     // End of variables declaration//GEN-END:variables
+    private Cliente cliente;
+    private ClienteDAO clienteDAO;
+    private List<Cliente> clientes;
+    private ClienteTableModel clienteTM;
+
+    private void limparEdits() {
+        edIdCli.setText("");
+        edNomeCli.setText("");
+        edCidadeCli.setText("");
+        cliente = null;
+    }
+
+    private void editParaCliente() {
+        cliente = new Cliente();
+        if (edIdCli.getText() != null && !edIdCli.getText().isEmpty()) {
+            cliente.setId(Integer.parseInt(edIdCli.getText()));
+        }
+        cliente.setNome(edNomeCli.getText());
+        cliente.setCidade(edCidadeCli.getText());
+    }
+
+    private void clienteParaEdit() {
+        edIdCli.setText(cliente.getId().toString());
+        edNomeCli.setText(cliente.getNome());
+        edCidadeCli.setText(cliente.getCidade());
+    }
+    private void atualizarTabela(){
+        clientes = clienteDAO.findClienteEntities();
+        clienteTM.setClientes(clientes);
+        clienteTM.fireTableDataChanged();
+    }
 }

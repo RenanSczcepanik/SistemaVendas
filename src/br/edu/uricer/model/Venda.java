@@ -30,7 +30,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Venda.findAll", query = "SELECT v FROM Venda v"),
     @NamedQuery(name = "Venda.findById", query = "SELECT v FROM Venda v WHERE v.id = :id"),
-    @NamedQuery(name = "Venda.findByValorVenda", query = "SELECT v FROM Venda v WHERE v.valorVenda = :valorVenda")})
+    @NamedQuery(name = "Venda.findByValorVenda", query = "SELECT v FROM Venda v WHERE v.valorVenda = :valorVenda"),
+    @NamedQuery(name = "Venda.findByQtdItens", query = "SELECT v FROM Venda v WHERE v.qtdItens = :qtdItens")})
 public class Venda implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -42,6 +43,8 @@ public class Venda implements Serializable {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "VALOR_VENDA")
     private BigDecimal valorVenda;
+    @Column(name = "QTD_ITENS")
+    private BigDecimal qtdItens;
     @JoinColumn(name = "ID_CLI", referencedColumnName = "ID")
     @ManyToOne
     private Cliente idCli;
@@ -73,6 +76,14 @@ public class Venda implements Serializable {
 
     public void setValorVenda(BigDecimal valorVenda) {
         this.valorVenda = valorVenda;
+    }
+
+    public BigDecimal getQtdItens() {
+        return qtdItens;
+    }
+
+    public void setQtdItens(BigDecimal qtdItens) {
+        this.qtdItens = qtdItens;
     }
 
     public Cliente getIdCli() {

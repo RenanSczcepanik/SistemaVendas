@@ -34,7 +34,7 @@ public class ClienteDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Cliente cliente) {
+    public Integer create(Cliente cliente) {
         if (cliente.getVendaCollection() == null) {
             cliente.setVendaCollection(new ArrayList<Venda>());
         }
@@ -59,6 +59,8 @@ public class ClienteDAO implements Serializable {
                 }
             }
             em.getTransaction().commit();
+            Integer idCriado = cliente.getId();
+            return idCriado;
         } finally {
             if (em != null) {
                 em.close();
@@ -75,10 +77,12 @@ public class ClienteDAO implements Serializable {
             Collection<Venda> vendaCollectionOld = persistentCliente.getVendaCollection();
             Collection<Venda> vendaCollectionNew = cliente.getVendaCollection();
             Collection<Venda> attachedVendaCollectionNew = new ArrayList<Venda>();
+       /*     
             for (Venda vendaCollectionNewVendaToAttach : vendaCollectionNew) {
                 vendaCollectionNewVendaToAttach = em.getReference(vendaCollectionNewVendaToAttach.getClass(), vendaCollectionNewVendaToAttach.getId());
                 attachedVendaCollectionNew.add(vendaCollectionNewVendaToAttach);
             }
+       */
             vendaCollectionNew = attachedVendaCollectionNew;
             cliente.setVendaCollection(vendaCollectionNew);
             cliente = em.merge(cliente);

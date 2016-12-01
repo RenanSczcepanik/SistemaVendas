@@ -35,7 +35,6 @@ public class ProdutoDAO implements Serializable {
     }
 
     public Integer create(Produto produto) {
-        Integer idCriado;
         if (produto.getVendaCollection() == null) {
             produto.setVendaCollection(new ArrayList<Venda>());
         }
@@ -50,7 +49,6 @@ public class ProdutoDAO implements Serializable {
             }
             produto.setVendaCollection(attachedVendaCollection);
             em.persist(produto);
-            
             for (Venda vendaCollectionVenda : produto.getVendaCollection()) {
                 Produto oldIdProdOfVendaCollectionVenda = vendaCollectionVenda.getIdProd();
                 vendaCollectionVenda.setIdProd(produto);
@@ -61,12 +59,12 @@ public class ProdutoDAO implements Serializable {
                 }
             }
             em.getTransaction().commit();
-            idCriado = produto.getId();
+            Integer idCriado = produto.getId();
             return idCriado;
         } finally {
             if (em != null) {
                 em.close();
-            }            
+            }
         }
     }
 
@@ -79,10 +77,12 @@ public class ProdutoDAO implements Serializable {
             Collection<Venda> vendaCollectionOld = persistentProduto.getVendaCollection();
             Collection<Venda> vendaCollectionNew = produto.getVendaCollection();
             Collection<Venda> attachedVendaCollectionNew = new ArrayList<Venda>();
+       /*     
             for (Venda vendaCollectionNewVendaToAttach : vendaCollectionNew) {
                 vendaCollectionNewVendaToAttach = em.getReference(vendaCollectionNewVendaToAttach.getClass(), vendaCollectionNewVendaToAttach.getId());
                 attachedVendaCollectionNew.add(vendaCollectionNewVendaToAttach);
-            }
+           }
+       */ 
             vendaCollectionNew = attachedVendaCollectionNew;
             produto.setVendaCollection(vendaCollectionNew);
             produto = em.merge(produto);

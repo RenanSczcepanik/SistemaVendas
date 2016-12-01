@@ -34,7 +34,7 @@ public class VendaDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Venda venda) {
+    public Integer create(Venda venda) {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -68,6 +68,8 @@ public class VendaDAO implements Serializable {
                 idProd = em.merge(idProd);
             }
             em.getTransaction().commit();
+            Integer idCriado = venda.getId();
+            return idCriado;
         } finally {
             if (em != null) {
                 em.close();

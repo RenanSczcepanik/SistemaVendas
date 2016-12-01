@@ -34,7 +34,7 @@ public class FornecedorDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Fornecedor fornecedor) {
+    public Integer create(Fornecedor fornecedor) {
         if (fornecedor.getVendaCollection() == null) {
             fornecedor.setVendaCollection(new ArrayList<Venda>());
         }
@@ -59,6 +59,8 @@ public class FornecedorDAO implements Serializable {
                 }
             }
             em.getTransaction().commit();
+            Integer idCriado = fornecedor.getId();
+            return idCriado;
         } finally {
             if (em != null) {
                 em.close();
@@ -75,10 +77,12 @@ public class FornecedorDAO implements Serializable {
             Collection<Venda> vendaCollectionOld = persistentFornecedor.getVendaCollection();
             Collection<Venda> vendaCollectionNew = fornecedor.getVendaCollection();
             Collection<Venda> attachedVendaCollectionNew = new ArrayList<Venda>();
+       /*     
             for (Venda vendaCollectionNewVendaToAttach : vendaCollectionNew) {
                 vendaCollectionNewVendaToAttach = em.getReference(vendaCollectionNewVendaToAttach.getClass(), vendaCollectionNewVendaToAttach.getId());
                 attachedVendaCollectionNew.add(vendaCollectionNewVendaToAttach);
             }
+       */ 
             vendaCollectionNew = attachedVendaCollectionNew;
             fornecedor.setVendaCollection(vendaCollectionNew);
             fornecedor = em.merge(fornecedor);

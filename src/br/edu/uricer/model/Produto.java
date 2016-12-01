@@ -122,7 +122,7 @@ public class Produto implements Serializable {
 
     @Override
     public String toString() {
-        return "[ id=" + id + "Nome:" + nome + "Preco_Venda" + precoVenda + " ]";
+        return "br.edu.uricer.model.Produto[ id=" + id + " ]";
     }
     
 }
