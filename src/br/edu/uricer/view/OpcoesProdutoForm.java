@@ -79,6 +79,7 @@ public class OpcoesProdutoForm extends javax.swing.JFrame {
         tbProdutos = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Opções do Produto");
 
         jLabel1.setText("Nome:");
 

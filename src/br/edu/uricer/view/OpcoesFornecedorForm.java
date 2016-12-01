@@ -75,7 +75,7 @@ public class OpcoesFornecedorForm extends javax.swing.JFrame {
         tbFornecs = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Cadastro Novo Fornecedor");
+        setTitle("Opções do Fornecedor");
 
         jLabel1.setText("Nome:");
 

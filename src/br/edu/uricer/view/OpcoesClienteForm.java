@@ -75,7 +75,7 @@ public class OpcoesClienteForm extends javax.swing.JFrame {
         tbClientes = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Cadastro Novo Cliente");
+        setTitle("Opções do Cliente");
 
         jLabel1.setText("Nome:");
 
